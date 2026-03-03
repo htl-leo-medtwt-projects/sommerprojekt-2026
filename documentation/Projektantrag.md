@@ -28,3 +28,21 @@ Die Hintergrundgeschichte des Spiels und die isometrische Perspektive sind meine
 ## Zielgruppe
 
 Das Spiel richtet sich an alle Altersgruppen. Es ist geeignet für Spieler, die Erfahrung mit Nahkampfspielen haben, aber auch für Anfänger, die sich in das Genre einarbeiten möchten.
+
+## Ergänzung
+
+### Asset Set
+
+-> [CraftPix](https://craftpix.net/?s=isometric)
+
+### Idee: Teleport-Exit
+
+Grundsätzlich kann man aus dem dungeon rennen. Wenn man sich den Teleport-Exit kauft kann man das von überall einfach.
+
+### Prioritäten
+
+1. Spielerbewegung auf Tiles
+2. Home-Areal mir Händler
+3. Dungeon-generation
+4. Ein Test-Monster und Schaden funktionieren lassen
+5. Monster, Waffen, Rüstung, Artefakte (Erweiterbar)
