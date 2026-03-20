@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "davidanson.vscode-markdownlint",
-        "yandeu.five-server"
+        "yandeu.five-server",
+        "esbenp.prettier-vscode"
     ]
 }
