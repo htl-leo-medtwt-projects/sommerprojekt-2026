@@ -5,9 +5,8 @@ export DOCS_DIR="documentation"
 export DIST_DIR="dist"
 export PROJECT_DIR="project"
 
-mkdir -p "$DIST_DIR"
+mkdir -p "$DIST_DIR" "$DIST_DIR/game" "$DIST_DIR/docs"
 cp -r "$PROJECT_DIR/"* "$DIST_DIR/game"
-mkdir -p "$DIST_DIR/docs"
 cp -r "$DOCS_DIR/"* "$DIST_DIR/docs/"
 cd "$DIST_DIR/docs"
 
