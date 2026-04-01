@@ -35,7 +35,7 @@ jobs:
             - name: Install ESLint and Prettier
               run: |
                   npm install -g eslint prettier
-                  npm install eslint-config-prettier
+                  npm install eslint-config-prettier eslint-formatter-compact
 
             - name: Run ESLint
               id: eslint
@@ -43,17 +43,15 @@ jobs:
                   echo "## ESLint Results" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
 
-                  # Run ESLint and capture output
-                  ESLINT_OUTPUT=$(npx eslint project/ --ext .js 2>&1 || true)
-
-                  if [ -z "$ESLINT_OUTPUT" ]; then
+                  # Run ESLint and check exit code
+                  if npx eslint project/ --ext .js --format=compact > eslint-output.txt 2>&1; then
                     echo "✅ No ESLint violations" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=success" >> $GITHUB_OUTPUT
                   else
                     echo "❌ ESLint violations found:" >> $GITHUB_STEP_SUMMARY
                     echo "" >> $GITHUB_STEP_SUMMARY
                     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-                    echo "$ESLINT_OUTPUT" >> $GITHUB_STEP_SUMMARY
+                    cat eslint-output.txt >> $GITHUB_STEP_SUMMARY
                     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=failure" >> $GITHUB_OUTPUT
                     exit 1
