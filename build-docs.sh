@@ -3,8 +3,10 @@
 
 export DOCS_DIR="documentation"
 export DIST_DIR="dist"
+export PROJECT_DIR="project"
 
 mkdir -p "$DIST_DIR"
+cp -r "$PROJECT_DIR/"* "$DIST_DIR/game"
 mkdir -p "$DIST_DIR/docs"
 cp -r "$DOCS_DIR/"* "$DIST_DIR/docs/"
 cd "$DIST_DIR/docs"
@@ -105,9 +107,26 @@ done
 
 # Close HTML tags
 cat >> ./index.html << EOF
-    <li class="site"><a href="#" target="_blank">Play Game</a></li>
+    <li class="site"><a href="../game/index.html" target="_blank">Play Game</a></li>
     </ul>
     <p><small>Generated on $(date)</small></p>
+</body>
+</html>
+EOF
+
+cat > ../index.html << EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <script>
+        window.location.href = "./docs/";
+    </script>
+</head>
+<body>
+    <p>If you are not redirected, <a href="./docs/">click here</a>.</p>
 </body>
 </html>
 EOF
