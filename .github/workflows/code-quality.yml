@@ -41,7 +41,7 @@ jobs:
               id: eslint
               run: |
                   echo "## ESLint Results" >> $GITHUB_STEP_SUMMARY
-                  if npx eslint . --ext .js --format=compact; then
+                  if npx eslint . --ext .js; then
                     echo "✅ No ESLint violations" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=success" >> $GITHUB_OUTPUT
                   else
