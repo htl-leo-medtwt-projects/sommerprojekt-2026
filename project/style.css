@@ -8,9 +8,11 @@
 
 :root {
     --title-font-family: 'Itim', cursive;
+    --body-font-family: 'Roboto', sans-serif;
     --title-font-size: 3em;
     --heading-font-size: 2em;
     --subtitle-font-size: 1.5em;
+    --body-font-size: 1rem;
 }
 
 /* Reusable Styles */
@@ -27,7 +29,9 @@
 /* Landing Page */
 
 .landing-page {
-    background: url('./assets/backgrounds-1827/game_background_1/game_background_1.png'), #aaa;
+    background:
+        url('./assets/backgrounds-1827/game_background_1/game_background_1.png'),
+        #aaa;
     background-blend-mode: multiply;
     background-size: cover;
     background-position: center;
@@ -77,24 +81,35 @@
         color: white;
         backdrop-filter: blur(5px);
 
-        
-        &:hover {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
         &.primary {
             background: rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            &:active {
+                background: rgba(0, 0, 0, 0.4);
+            }
         }
 
         &.secondary {
             background: rgba(0, 0, 0, 0.1);
+
+            &:hover {
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            &:active {
+                background: rgba(0, 0, 0, 0.3);
+            }
         }
     }
 }
 
 .guide {
-    font-family: var(--title-font-family);
-    font-size: var(--subtitle-font-size);
+    font-family: var(--body-font-family);
+    font-size: var(--body-font-size);
     width: fit-content;
     max-width: 80%;
     margin: 1rem auto;
@@ -109,4 +124,53 @@
     padding: 0.2rem 0.5rem;
     margin: 1rem auto;
     color: white;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.8rem;
+    background: #2c2c2c;
+    padding: 1rem;
+    color: white;
+    font-family: var(--body-font-family);
+
+    .mobile {
+        display: none;
+    }
+
+    .desktop {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .heading {
+        font-size: 1.5em;
+    }
+    .subtitle {
+        font-size: 1.2em;
+    }
+    .title {
+        font-size: 2em;
+    }
+    .guide {
+        font-size: 1em;
+    }
+    .action {
+        flex-direction: column;
+        button {
+            min-width: 70vw;
+            height: 70px;
+        }
+    }
+
+    footer {
+        .mobile {
+            display: block;
+        }
+
+        .desktop {
+            display: none;
+        }
+    }
 }
