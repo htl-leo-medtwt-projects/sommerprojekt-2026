@@ -41,11 +41,20 @@ jobs:
               id: eslint
               run: |
                   echo "## ESLint Results" >> $GITHUB_STEP_SUMMARY
-                  if npx eslint . --ext .js; then
+                  echo "" >> $GITHUB_STEP_SUMMARY
+
+                  # Run ESLint and capture output
+                  ESLINT_OUTPUT=$(npx eslint project/ --ext .js 2>&1 || true)
+
+                  if [ -z "$ESLINT_OUTPUT" ]; then
                     echo "✅ No ESLint violations" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=success" >> $GITHUB_OUTPUT
                   else
-                    echo "❌ ESLint violations found" >> $GITHUB_STEP_SUMMARY
+                    echo "❌ ESLint violations found:" >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                    echo "$ESLINT_OUTPUT" >> $GITHUB_STEP_SUMMARY
+                    echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=failure" >> $GITHUB_OUTPUT
                     exit 1
                   fi
