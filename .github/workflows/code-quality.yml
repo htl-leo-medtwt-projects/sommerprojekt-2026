@@ -25,14 +25,17 @@ jobs:
             - name: Cache global npm packages
               uses: actions/cache@v4
               with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-node-global-${{ hashFiles('.github/workflows/code-quality.yml') }}
+                  path: |
+                      ~/.npm
+                      node_modules
+                  key: ${{ runner.os }}-node-global-${{ hashFiles('.github/workflows/code-quality.yml', 'eslint.config.js') }}
                   restore-keys: |
                       ${{ runner.os }}-node-global-
 
             - name: Install ESLint and Prettier
               run: |
-                  npm install -g eslint prettier eslint-config-prettier
+                  npm install -g eslint prettier
+                  npm install eslint-config-prettier
 
             - name: Run ESLint
               id: eslint
