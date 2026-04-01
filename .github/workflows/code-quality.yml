@@ -21,7 +21,14 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: '20'
-                  cache: 'npm'
+
+            - name: Cache global npm packages
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-global-${{ hashFiles('.github/workflows/code-quality.yml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-global-
 
             - name: Install ESLint and Prettier
               run: |
