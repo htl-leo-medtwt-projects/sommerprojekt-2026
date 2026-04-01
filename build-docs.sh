@@ -92,7 +92,7 @@ EOF
 # List all top-level directories
 find . -maxdepth 1 -type d | sort | grep -v "^\.$" | while read dir; do
     dir_name=$(basename "$dir")
-    if [ -f "$dir/index.html" ]; then
+    if [ -f "$dir/index.html" ] && [ "$dir_name" != "assets" ]; then
         echo "        <li class=\"directory\"><a href=\"./$dir_name/\">$dir_name</a></li>" >> ./index.html
     fi
 done

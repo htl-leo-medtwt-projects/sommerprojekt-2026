@@ -1,4 +1,6 @@
-# Documentation
+# Wichtige Ordner
+
+## Documentation
 
 Lade hier deine Projektdokumentation ab.
 Diese besteht aus:
@@ -8,11 +10,11 @@ Diese besteht aus:
 * den **Sprint-Dokumentationen**
 * die Unterlagen zur abschließenden **Präsentation**
   
-## Projektantrag und Prototyp
+### Projektantrag und Prototyp
 
 Die genauen Angaben für den Projektantrag und die Ausarbeitung des Prototyps findest du im Moodle-Kurs. Plane hier dein Sommerprojekt bereits detailliert und klar verständlich, damit wir den USP deiner Seite gut nachvollziehen können!
 
-## Sprint-Doku
+### Sprint-Doku
 
 Füge in den Entwicklungsphasen im Rahmen jedes Sprints in diesem Bereich **eine DOKUMENTATION deines Fortschrittes** hinzu!
 
@@ -22,3 +24,9 @@ Format: PDF oder Markdown-Datei
 * Neuerungen bzw.  Änderungen seit dem letzten Sprint als Liste und in Stichworten
 * Screenshot der GitHub-Insights Statistik
 * Verpflichtende Ziele bis zum nächsten Sprint
+
+## Projekt-Ordner
+
+Integriere in diesen Bereich deine gesamte praktische Projektstruktur!
+Jeglicher Fremdcode (z. B. Codepen, ChatGPT und CO.) ist als solcher im Projekt zu kennzeichnen.
+Ergänze sprechende Kommentare in deinem Code zur Strukturierung + Erläuterung!
