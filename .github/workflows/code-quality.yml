@@ -29,13 +29,13 @@ jobs:
                   path: |
                       ~/.npm
                       node_modules
-                  key: ${{ runner.os }}-node-global-${{ hashFiles('.github/workflows/code-quality.yml', 'eslint.config.js') }}
+                  key: ${{ runner.os }}-node-eslint-${{ hashFiles('.github/workflows/code-quality.yml', 'eslint.config.js') }}
                   restore-keys: |
-                      ${{ runner.os }}-node-global-
+                      ${{ runner.os }}-node-eslint-
 
-            - name: Install ESLint and Prettier
+            - name: Install ESLint
               run: |
-                  npm install -g eslint prettier
+                  npm install -g eslint
                   npm install eslint-config-prettier eslint-formatter-compact
 
             - name: Run ESLint
@@ -55,41 +55,4 @@ jobs:
                     cat eslint-output.txt >> $GITHUB_STEP_SUMMARY
                     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=failure" >> $GITHUB_OUTPUT
-                  fi
-
-            - name: Format with Prettier
-              id: prettier
-              run: |
-                  echo "## Prettier Formatting" >> $GITHUB_STEP_SUMMARY
-
-                  # Get list of files to format
-                  FILES_TO_FORMAT=$(npx prettier --list-different "**/*.js" "**/*.html" "**/*.css" "**/*.json" --ignore-unknown --ignore-path .gitignore --config prettier.config.js 2>/dev/null || true)
-
-                  if [ -z "$FILES_TO_FORMAT" ]; then
-                    echo "✅ All files already formatted" >> $GITHUB_STEP_SUMMARY
-                    echo "prettier_status=success" >> $GITHUB_OUTPUT
-                  else
-                    echo "📝 Formatting files:" >> $GITHUB_STEP_SUMMARY
-                    echo "$FILES_TO_FORMAT" | while read file; do
-                      echo "- \`$file\`" >> $GITHUB_STEP_SUMMARY
-                    done
-                    
-                    # Actually format the files using config
-                    npx prettier --write "**/*.js" "**/*.html" "**/*.css" "**/*.json" --ignore-unknown --ignore-path .gitignore --config prettier.config.js
-                    
-                    # Commit changes if in a PR or on main branch
-                    if [[ "$GITHUB_EVENT_NAME" == "pull_request" || "$GITHUB_REF" == "refs/heads/main" ]]; then
-                      git config --local user.email "action@github.com"
-                      git config --local user.name "GitHub Action"
-                      git add -A
-                      if git diff --staged --quiet; then
-                        echo "No changes to commit" >> $GITHUB_STEP_SUMMARY
-                      else
-                        git commit -m "🎨 Format code with Prettier"
-                        git push
-                        echo "📤 Changes committed and pushed" >> $GITHUB_STEP_SUMMARY
-                      fi
-                    fi
-                    
-                    echo "prettier_status=formatted" >> $GITHUB_OUTPUT
                   fi
