@@ -27,6 +27,7 @@ jobs:
         with:
           sparse-checkout: |
             documentation
+            project
             build-docs.sh
           sparse-checkout-cone-mode: false
 
