@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --title-font-family: 'Itim', cursive;
+    --title-font-size: 3em;
+    --heading-font-size: 2em;
+    --subtitle-font-size: 1.5em;
+}
+
+/* Reusable Styles */
+.frosted {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    color: white;
+    padding: 1rem;
+}
+
+/* Landing Page */
+
+.landing-page {
+    background: url('./assets/backgrounds-1827/game_background_1/game_background_1.png'), #aaa;
+    background-blend-mode: multiply;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    font-size: 1.4rem;
+    padding: 30vh 0 2rem 0;
+    color: white;
+}
+
+#hero {
+    height: 55vh;
+}
+
+.title {
+    font-family: var(--title-font-family);
+    font-size: var(--title-font-size);
+    text-align: center;
+    color: white;
+}
+
+.subtitle {
+    font-family: var(--title-font-family);
+    font-size: var(--subtitle-font-size);
+    text-align: center;
+    color: white;
+}
+
+.action {
+    width: fit-content;
+    margin: 1rem auto;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        min-width: 200px;
+        height: 50px;
+        font-size: 1.2rem;
+        font-family: var(--title-font-family);
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.2s;
+        color: white;
+        backdrop-filter: blur(5px);
+
+        
+        &:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        &.primary {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        &.secondary {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    }
+}
+
+.guide {
+    font-family: var(--title-font-family);
+    font-size: var(--subtitle-font-size);
+    width: fit-content;
+    max-width: 80%;
+    margin: 1rem auto;
+    color: white;
+}
+
+.heading {
+    font-family: var(--title-font-family);
+    font-size: var(--heading-font-size);
+    width: fit-content;
+    border-bottom: 5px solid white;
+    padding: 0.2rem 0.5rem;
+    margin: 1rem auto;
+    color: white;
+}
