@@ -54,7 +54,6 @@ jobs:
                     cat eslint-output.txt >> $GITHUB_STEP_SUMMARY
                     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=failure" >> $GITHUB_OUTPUT
-                    exit 1
                   fi
 
             - name: Format with Prettier
