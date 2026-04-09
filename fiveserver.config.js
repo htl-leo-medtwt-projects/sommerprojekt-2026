@@ -1,5 +1,5 @@
 module.exports = {
-  highlight: true,
+  highlight: false,
   navigate: true,
   port: 8080,
   injectBody: true,

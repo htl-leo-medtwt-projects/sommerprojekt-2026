@@ -67,7 +67,7 @@ dialog {
 
 /* Landing Page */
 
-.landing-page {
+#landing-page {
     background:
         url('./assets/backgrounds-1827/game_background_1/game_background_1.png'),
         #aaa;
@@ -164,6 +164,18 @@ dialog {
     margin: 1rem auto;
     color: white;
 }
+
+/* Game */
+
+#game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f0f0f0;
+}
+
+/* Footer */
 
 footer {
     text-align: center;

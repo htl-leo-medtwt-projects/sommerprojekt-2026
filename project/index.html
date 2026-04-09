@@ -6,17 +6,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dungeoner</title>
 
+        <!-- p5.js v2.2.1 -->
+        <script src="https://cdn.jsdelivr.net/npm/p5@2.2.1/lib/p5.min.js"></script>
+
         <script type="module" src="index.js" defer></script>
         <link rel="stylesheet" href="style.css" />
     </head>
 
     <body>
-        <section class="landing-page">
+        <section id="landing-page">
             <div id="hero">
                 <h1 class="title">Dungeoner</h1>
                 <p class="subtitle">An isometric dungeon crawler</p>
                 <div class="action">
-                    <button class="primary">Start Game</button>
+                    <button class="primary" id="startBtn">Start Game</button>
                     <button class="secondary" id="optionsBtn">Options</button>
                 </div>
             </div>
@@ -61,6 +64,7 @@
                 </p>
             </div>
         </section>
+        <section id="game" style="display: none"></section>
         <dialog id="options">
             <div class="dialog-header">
                 <h2>Options</h2>
