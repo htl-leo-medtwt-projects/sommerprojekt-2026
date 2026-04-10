@@ -35,4 +35,11 @@ export default class Dialog {
             this.dialog.showModal();
         });
     }
+
+    /**
+     * Closes the dialog
+     */
+    close() {
+        this.dialog.close();
+    }
 }
