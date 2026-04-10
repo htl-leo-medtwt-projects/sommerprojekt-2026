@@ -1,5 +1,3 @@
-// p5.js sketch functions
-
 export function preload(p) {
     // preload() is used for preloading assets before the sketch runs
     // This function runs once before setup() and is typically used for loading files (e.g., images, sounds)
