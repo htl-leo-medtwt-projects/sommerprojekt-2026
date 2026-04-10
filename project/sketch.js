@@ -7,7 +7,10 @@ export function preload(p) {
 export function setup(p) {
     // setup() runs once at the beginning of the sketch, used for initial setup (e.g., canvas size)
     // It is called only once at the start of the sketch
-    p.createCanvas(700, 500); // Creates a 700x500 canvas
+    p.createCanvas(window.innerWidth, window.innerHeight); // Creates a canvas that uses the full page width and height
+    p.windowResized = () => {
+        p.resizeCanvas(window.innerWidth, window.innerHeight);
+    };
 }
 
 export function keyPressed(p) {
@@ -29,7 +32,16 @@ export function draw(p) {
     // It's continuously called while the sketch is running
     // https://p5js.org/reference/p5/draw
 
-    // Example: Draw a yellow background with a circle in the center
-    p.background('yellow');
-    p.circle(p.width / 2, p.height / 2, 50);
+  p.background('black');
+  rectangles(p);
+}
+
+function rectangles(p) {
+  p.colorMode(p.HSB, 500);
+  for (let x = 25; x < 475; x += 25) {
+    for (let y = 25; y < 425; y += 25) {
+      p.fill(x, 500, 500);
+      p.rect(x + p.random(-2, 2), y + p.random(-2, 2), 20, 20);
+    }
+  }
 }
