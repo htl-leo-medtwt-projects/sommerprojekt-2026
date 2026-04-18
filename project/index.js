@@ -1,7 +1,11 @@
 import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
-import { preload, setup, draw, keyPressed, mousePressed } from './sketch.js';
+import { setup, draw } from './sketch.js';
 
+export const dx = 70;
+export const dy = 10;
+
+console.clear();
 const optionsDialog = new Dialog('#options', '#optionsBtn');
 const startButton = new StartButton('#startBtn', () => {
     optionsDialog.close();
@@ -23,13 +27,10 @@ const startButton = new StartButton('#startBtn', () => {
     const app = new p5((p5) => {
         p = p5;
 
-        // p5.js lifecycle methods
-        p.preload = () => preload(p); // Used to load assets before the sketch starts
-        p.setup = () => setup(p); // Initializes the sketch (called once)
-        p.draw = () => draw(p); // Draws to the screen (called repeatedly)
-
-        // Event handling functions
-        p.keyPressed = () => keyPressed(p); // Triggered when a key is pressed
-        p.mousePressed = () => mousePressed(p); // Triggered when a mouse button is pressed
+        p.setup = () => setup(p);
+        p.draw = () => draw(p);
     }, appElement);
 });
+
+// Debug: Start Game on refresh
+startButton.button.dispatchEvent(new Event('click'));
