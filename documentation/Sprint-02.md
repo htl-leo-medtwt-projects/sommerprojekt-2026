@@ -1,4 +1,4 @@
-# Sommerprojekt 2026 - Sprint 01
+# Sommerprojekt 2026 - Sprint 02
 
 Benjamin, 2AHITM
 
@@ -10,8 +10,8 @@ Benjamin, 2AHITM
 
 ## GitHub Insights
 
-<img width="896" height="527" alt="image" src="https://github.com/user-attachments/assets/979b903e-e5f1-4448-9438-4bf03da6aa7f" />
-<img width="896" height="527" alt="image" src="https://github.com/user-attachments/assets/f775e378-21e2-4f60-a1c4-f37357a3bf20" />
+<img width="896" height="527" alt="image" src="https://github.com/user-attachments/assets/3c494ec7-90a3-4394-a839-8aa60a56a6fe" />
+<img width="862" height="432" alt="image" src="https://github.com/user-attachments/assets/c2fcacb4-75f2-400c-883a-01632868dcdd" />
 
 ## Ziele für nächsten Sprint
 
