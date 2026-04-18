@@ -2,9 +2,6 @@ import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
 import { setup, draw } from './sketch.js';
 
-export const dx = 70;
-export const dy = 10;
-
 console.clear();
 const optionsDialog = new Dialog('#options', '#optionsBtn');
 const startButton = new StartButton('#startBtn', () => {
@@ -32,5 +29,6 @@ const startButton = new StartButton('#startBtn', () => {
     }, appElement);
 });
 
-// Debug: Start Game on refresh
-startButton.button.dispatchEvent(new Event('click'));
+if (localStorage.getItem('debug') != null) {
+    startButton.button.dispatchEvent(new Event('click'));
+}

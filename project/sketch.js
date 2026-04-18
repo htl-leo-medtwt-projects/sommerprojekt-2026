@@ -75,7 +75,7 @@ function drawLevel(p, level) {
     // p.rect(0, 0, boardWidth, boardHeight);
     // p.pop();
 
-    p.translate(boardWidth / 2, boardHeight / 2);
+    p.translate(boardWidth * 0.6, tileHeight * 1.2);
 
     // throw new Error(JSON.stringify(rows));
     for (let y = 0; y < rows.length; y++) {
