@@ -1,6 +1,6 @@
 import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
-import { setup, draw } from './sketch.js';
+import { setup, draw, keyPressed } from './sketch.js';
 
 console.clear();
 const optionsDialog = new Dialog('#options', '#optionsBtn');
@@ -26,6 +26,8 @@ const startButton = new StartButton('#startBtn', () => {
 
         p.setup = () => setup(p);
         p.draw = () => draw(p);
+
+        p.keyPressed = () => keyPressed(p);
     }, appElement);
 });
 

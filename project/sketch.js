@@ -1,11 +1,11 @@
 import levels from './levels.js';
 import options from './options.js';
 
-const levelString = levels[0].string;
 const { tileHeight, tileWidth } = options;
 
 let baseMap;
 let varMap;
+let playerPosition = { x: 0, y: 0 };
 
 export async function setup(p) {
     baseMap = {
@@ -54,7 +54,7 @@ export async function setup(p) {
 
 export function draw(p) {
     p.background('#a2a2a2');
-    drawLevel(p, levelString);
+    drawLevel(p, levels[0].string);
 }
 
 function drawLevel(p, level) {
@@ -68,6 +68,10 @@ function drawLevel(p, level) {
 
     const boardWidth = tileWidth * rows[0].length;
     const boardHeight = tileHeight * rows.length;
+
+    // Update player position to be inside the board
+    playerPosition.x = Math.max(0, Math.min(playerPosition.x, rows[0].length - 1));
+    playerPosition.y = Math.max(0, Math.min(playerPosition.y, rows.length - 1));
 
     // ------- Draw Background box -------
     // p.push();
@@ -106,19 +110,21 @@ function drawLevel(p, level) {
                 console.error(
                     `Invalid tile: ${tile[0]}/${tile[1]}. Variant not found.`,
                 );
-                // continue;
+                continue;
             }
 
-            // TODO: Draw the tile at position (x, y) using the base and variant
-            // console.log(
-            //     `Drawing tile ${base} with variant ${variant} at position (${x}, ${y})`,
-            // );
             if (base != null) p.image(base, 0, 0, tileWidth, tileHeight);
             if (variant != null) {
                 p.push();
                 p.imageMode(p.CENTER);
                 p.scale(0.7);
                 p.image(variant, 0, variant.height / -2.2);
+                p.pop();
+            }
+            if (playerPosition.x === x && playerPosition.y === y) {
+                p.push();
+                p.fill(255, 0, 0);
+                p.ellipse(0, 0, 20, 20);
                 p.pop();
             }
 
@@ -169,4 +175,26 @@ function drawLevel(p, level) {
     // p.line(0, boardHeight / 2, boardWidth, boardHeight / 2);
     // p.line(boardWidth / 2, 0, boardWidth / 2, boardHeight);
     // p.pop();
+}
+
+export function keyPressed(p) {
+    switch (p.key) {
+        case 'w':
+            console.log('w pressed');
+            playerPosition.y -= 1;
+            break;
+        case 'a':
+            console.log('a pressed');
+            playerPosition.x -= 1;
+            break;
+        case 's':
+            console.log('s pressed');
+            playerPosition.y += 1;
+            break;
+        case 'd':
+            console.log('d pressed');
+            playerPosition.x += 1;
+            break;
+        
+    }
 }
