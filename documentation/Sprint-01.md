@@ -4,10 +4,10 @@ Benjamin, 2AHITM
 
 ## Fortschritt
 
-* GitHub Pages Integration
-* Landing Page
-  * Mobile Layout
-* Optionen-Container
+- GitHub Pages Integration
+- Landing Page
+  - Mobile Layout
+- Optionen-Container
 
 ## GitHub Insights
 
@@ -16,7 +16,7 @@ Benjamin, 2AHITM
 
 ## Ziele für nächsten Sprint
 
-* Spiele-System starten
-  * Guide-Block auf Landing Page schreiben
-  * Optionen befüllen
-  * Spieler soll sich auf Bildschirm bewegen können.
+- Spiele-System starten
+  - Guide-Block auf Landing Page schreiben
+  - Optionen befüllen
+  - Spieler soll sich auf Bildschirm bewegen können.

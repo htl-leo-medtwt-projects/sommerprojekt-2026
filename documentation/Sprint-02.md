@@ -4,9 +4,9 @@ Benjamin, 2AHITM
 
 ## Fortschritt
 
-* Game Engine eingebunden
-* Level nach Level-String eingelesen und gezeichnet
-* Level-Dekoration nach Level-String eingelesen und gezeichnet
+- Game Engine eingebunden
+- Level nach Level-String eingelesen und gezeichnet
+- Level-Dekoration nach Level-String eingelesen und gezeichnet
 
 ## GitHub Insights
 
@@ -15,9 +15,9 @@ Benjamin, 2AHITM
 
 ## Ziele für nächsten Sprint
 
-* Den Charakter am Grid bewegen
-* Guide-Block auf Landing Page schreiben
-* Optionen befüllen
-* Levels/Räume designen
-* Wechsel zwischen Räumen implementieren
-* Minimap starten
+- Den Charakter am Grid bewegen
+- Guide-Block auf Landing Page schreiben
+- Optionen befüllen
+- Levels/Räume designen
+- Wechsel zwischen Räumen implementieren
+- Minimap starten

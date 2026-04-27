@@ -2,8 +2,8 @@
 
 ## Grundidee
 
-* Projektname: **Dungeoner** (Vorläufiger Name)
-* Art des Spiels: **Dungeon Crawler**
+- Projektname: **Dungeoner** (Vorläufiger Name)
+- Art des Spiels: **Dungeon Crawler**
 
 ### Spielziel
 
