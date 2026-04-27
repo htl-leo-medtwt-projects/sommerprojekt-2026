@@ -1,49 +1,50 @@
 import levels from './levels.js';
 import options from './options.js';
 
-const { tileHeight, tileWidth } = options;
-
-let baseMap;
-let varMap;
+let assets;
 let playerPosition = { x: 0, y: 0 };
+let currentLevel;
 
 export async function setup(p) {
-    baseMap = {
-        Empt: null,
-        Gren: await p.loadImage('./assets/winter/winter (26).png'), // Green Ground
-        GrSu: await p.loadImage('./assets/winter/winter (27).png'), // Green Ground, sunken
-        GrDi: await p.loadImage('./assets/winter/winter (28).png'), // Green Ground, with Dirt
-        Snow: await p.loadImage('./assets/winter/winter (31).png'), // Snow Ground
-        SnSu: await p.loadImage('./assets/winter/winter (32).png'), // Snow Ground, sunken
-        SnPa: await p.loadImage('./assets/winter/winter (33).png'), // Snow Ground, with stone path
-        SnRo: await p.loadImage('./assets/winter/winter (34).png'), // Snow Ground, with round stone
-        SnQu: await p.loadImage('./assets/winter/winter (35).png'), // Snow Ground, with square stone
-        Wood: await p.loadImage('./assets/winter/winter (36).png'), // Wood
-        Brdg: await p.loadImage('./assets/winter/winter (37).png'), // Bridge
-    };
+    assets = {
+        baseMap: {
+            Empt: null,
+            Gren: await p.loadImage('./assets/winter/winter (26).png'), // Green Ground
+            GrSu: await p.loadImage('./assets/winter/winter (27).png'), // Green Ground, sunken
+            GrDi: await p.loadImage('./assets/winter/winter (28).png'), // Green Ground, with Dirt
+            Snow: await p.loadImage('./assets/winter/winter (31).png'), // Snow Ground
+            SnSu: await p.loadImage('./assets/winter/winter (32).png'), // Snow Ground, sunken
+            SnPa: await p.loadImage('./assets/winter/winter (33).png'), // Snow Ground, with stone path
+            SnRo: await p.loadImage('./assets/winter/winter (34).png'), // Snow Ground, with round stone
+            SnQu: await p.loadImage('./assets/winter/winter (35).png'), // Snow Ground, with square stone
+            Wood: await p.loadImage('./assets/winter/winter (36).png'), // Wood
+            Brdg: await p.loadImage('./assets/winter/winter (37).png'), // Bridge
+        },
+        varMap: {
+            None: null,
+            Plyr: null, // Player Start Position
+            SgnX: await p.loadImage('./assets/winter/winter (1).png'), // Sign with Skull
+            SgnF: await p.loadImage('./assets/winter/winter (2).png'), // Sign pointing forwards
+            SgnR: await p.loadImage('./assets/winter/winter (3).png'), // Sign pointing right
+            SgnL: await p.loadImage('./assets/winter/winter (4).png'), // Sign pointing left
+            Plrd: await p.loadImage('./assets/winter/winter (5).png'), // Pole with red flag
+            Plbl: await p.loadImage('./assets/winter/winter (6).png'), // Pole with blue flag
+            Spar: await p.loadImage('./assets/winter/winter (7).png'), // Spear
+            Lfdk: await p.loadImage('./assets/winter/winter (10).png'), // Darker Leaf
+            Lflt: await p.loadImage('./assets/winter/winter (11).png'), // Darker Leaf
+            Skll: await p.loadImage('./assets/winter/winter (12).png'), // Skull
+            Flr1: await p.loadImage('./assets/winter/winter (13).png'), // Flower 1 (White)
+            Flr2: await p.loadImage('./assets/winter/winter (14).png'), // Flower 2 (Yellow)
+            Flr3: await p.loadImage('./assets/winter/winter (15).png'), // Flower 3 (No Flower)
+            Flr4: await p.loadImage('./assets/winter/winter (16).png'), // Flower 4 (Red)
+            Flr5: await p.loadImage('./assets/winter/winter (17).png'), // Flower 5 (White)
+            Path: await p.loadImage('./assets/winter/winter (18).png'), // Stone Path
+            Stne: await p.loadImage('./assets/winter/winter (21).png'), // Big Stone
+            TreW: await p.loadImage('./assets/winter/winter (22).png'), // Winter Tree
+            TreS: await p.loadImage('./assets/winter/winter (23).png'), // Summer Tree
+        },
 
-    varMap = {
-        None: null,
-        Plyr: null, // Player Start Position
-        SgnX: await p.loadImage('./assets/winter/winter (1).png'), // Sign with Skull
-        SgnF: await p.loadImage('./assets/winter/winter (2).png'), // Sign pointing forwards
-        SgnR: await p.loadImage('./assets/winter/winter (3).png'), // Sign pointing right
-        SgnL: await p.loadImage('./assets/winter/winter (4).png'), // Sign pointing left
-        Plrd: await p.loadImage('./assets/winter/winter (5).png'), // Pole with red flag
-        Plbl: await p.loadImage('./assets/winter/winter (6).png'), // Pole with blue flag
-        Spar: await p.loadImage('./assets/winter/winter (7).png'), // Spear
-        Lfdk: await p.loadImage('./assets/winter/winter (10).png'), // Darker Leaf
-        Lflt: await p.loadImage('./assets/winter/winter (11).png'), // Darker Leaf
-        Skll: await p.loadImage('./assets/winter/winter (12).png'), // Skull
-        Flr1: await p.loadImage('./assets/winter/winter (13).png'), // Flower 1 (White)
-        Flr2: await p.loadImage('./assets/winter/winter (14).png'), // Flower 2 (Yellow)
-        Flr3: await p.loadImage('./assets/winter/winter (15).png'), // Flower 3 (No Flower)
-        Flr4: await p.loadImage('./assets/winter/winter (16).png'), // Flower 4 (Red)
-        Flr5: await p.loadImage('./assets/winter/winter (17).png'), // Flower 5 (White)
-        Path: await p.loadImage('./assets/winter/winter (18).png'), // Stone Path
-        Stne: await p.loadImage('./assets/winter/winter (21).png'), // Big Stone
-        TreW: await p.loadImage('./assets/winter/winter (22).png'), // Winter Tree
-        TreS: await p.loadImage('./assets/winter/winter (23).png'), // Summer Tree
+        playerImage: await p.loadImage('./assets/ghost/ghost (15).png'), // White ghost
     };
 
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -54,23 +55,27 @@ export async function setup(p) {
 
 export function draw(p) {
     p.background('#a2a2a2');
-    drawLevel(p, levels[0].string);
+    currentLevel = levels[0].string;
+    drawLevel(p);
 }
 
-function drawLevel(p, level) {
+function drawLevel(p) {
     p.push();
     p.imageMode(p.CENTER);
 
-    const rows = level
+    const rows = currentLevel
         .trim()
         .split('\n')
         .map((row) => row.trim().split(' '));
 
-    const boardWidth = tileWidth * rows[0].length;
-    const boardHeight = tileHeight * rows.length;
+    const boardWidth = options.tileWidth * rows[0].length;
+    const boardHeight = options.tileHeight * rows.length;
 
     // Update player position to be inside the board
-    playerPosition.x = Math.max(0, Math.min(playerPosition.x, rows[0].length - 1));
+    playerPosition.x = Math.max(
+        0,
+        Math.min(playerPosition.x, rows[0].length - 1),
+    );
     playerPosition.y = Math.max(0, Math.min(playerPosition.y, rows.length - 1));
 
     // ------- Draw Background box -------
@@ -79,7 +84,7 @@ function drawLevel(p, level) {
     // p.rect(0, 0, boardWidth, boardHeight);
     // p.pop();
 
-    p.translate(boardWidth * 0.6, tileHeight * 1.2);
+    p.translate(boardWidth * 0.6, options.tileHeight * 1.2);
 
     // throw new Error(JSON.stringify(rows));
     for (let y = 0; y < rows.length; y++) {
@@ -89,15 +94,16 @@ function drawLevel(p, level) {
 
             // 282 211.5
             const offset = 40;
-            const xPosition = ((x - y) * (tileWidth + offset)) / 2;
+            const xPosition = ((x - y) * (options.tileWidth + offset)) / 2;
             const yPosition =
-                ((x + y) * (tileHeight + offset)) / 2 - (45 * (x + y)) / 2;
+                ((x + y) * (options.tileHeight + offset)) / 2 -
+                (45 * (x + y)) / 2;
             p.translate(xPosition, yPosition);
 
             const tile = cols[x].split('/');
 
-            const base = baseMap[tile[0]];
-            const variant = varMap[tile[1]];
+            const base = assets.baseMap[tile[0]];
+            const variant = assets.varMap[tile[1]];
 
             if (base === undefined) {
                 console.error(
@@ -113,7 +119,8 @@ function drawLevel(p, level) {
                 continue;
             }
 
-            if (base != null) p.image(base, 0, 0, tileWidth, tileHeight);
+            if (base != null)
+                p.image(base, 0, 0, options.tileWidth, options.tileHeight);
             if (variant != null) {
                 p.push();
                 p.imageMode(p.CENTER);
@@ -123,8 +130,9 @@ function drawLevel(p, level) {
             }
             if (playerPosition.x === x && playerPosition.y === y) {
                 p.push();
-                p.fill(255, 0, 0);
-                p.ellipse(0, 0, 20, 20);
+                p.scale(0.8);
+                p.translate(0, -75);
+                p.image(assets.playerImage, 0, 0);
                 p.pop();
             }
 
@@ -178,23 +186,50 @@ function drawLevel(p, level) {
 }
 
 export function keyPressed(p) {
+    let newPosition = { ...playerPosition };
     switch (p.key) {
         case 'w':
-            console.log('w pressed');
-            playerPosition.y -= 1;
+            newPosition.y -= 1;
             break;
         case 'a':
-            console.log('a pressed');
-            playerPosition.x -= 1;
+            newPosition.x -= 1;
             break;
         case 's':
-            console.log('s pressed');
-            playerPosition.y += 1;
+            newPosition.y += 1;
             break;
         case 'd':
-            console.log('d pressed');
-            playerPosition.x += 1;
+            newPosition.x += 1;
             break;
-        
     }
+    if (isTileWalkable(newPosition)) {
+        playerPosition = newPosition;
+    }
+}
+
+function isTileWalkable(position) {
+    const tile = getTileAtPosition(position);
+    return (
+        tile.base !== 'Empt' &&
+        tile.variant !== 'Stne' &&
+        tile.variant !== 'TreW' &&
+        tile.variant !== 'TreS'
+    );
+}
+
+function getTileAtPosition(position) {
+    const rows = currentLevel
+        .trim()
+        .split('\n')
+        .map((row) => row.trim().split(' '));
+
+    const boardHeight = rows.length;
+    const boardWidth = rows[0].length;
+
+    if (position.y < 0 || position.y >= boardHeight || position.x < 0 || position.x >= boardWidth) {
+        return { base: 'Empt', variant: 'None' };
+    }
+
+    const tile = rows[position.y][position.x].split('/');
+
+    return { base: tile[0], variant: tile[1] };
 }
