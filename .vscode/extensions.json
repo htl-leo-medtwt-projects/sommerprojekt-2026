@@ -3,6 +3,8 @@
         "davidanson.vscode-markdownlint",
         "yandeu.five-server",
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "usernamehw.errorlens",
+        "gruntfuggly.todo-tree"
     ]
 }
