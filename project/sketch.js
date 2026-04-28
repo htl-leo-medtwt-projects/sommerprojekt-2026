@@ -3,6 +3,7 @@ import options from './options.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
+let wantsTransfer = false;
 let currentLevel;
 
 export async function setup(p) {
@@ -51,19 +52,81 @@ export async function setup(p) {
     p.windowResized = () => {
         p.resizeCanvas(window.innerWidth, window.innerHeight);
     };
+
+    currentLevel = getLevelByName('home');
 }
 
 export function draw(p) {
     p.background('#a2a2a2');
-    currentLevel = levels[0].string;
     drawLevel(p);
+}
+
+export function keyPressed(p) {
+    let newPosition = { ...playerPosition };
+    switch (p.key) {
+        case 'w':
+            newPosition.y -= 1;
+            break;
+        case 'a':
+            newPosition.x -= 1;
+            break;
+        case 's':
+            newPosition.y += 1;
+            break;
+        case 'd':
+            newPosition.x += 1;
+            break;
+        case 't':
+            wantsTransfer = true;
+            return;
+    }
+    if (isTileWalkable(newPosition)) {
+        playerPosition = newPosition;
+    }
+}
+
+function isTileWalkable(position) {
+    const tile = getTileAtPosition(position);
+    return (
+        tile.base !== 'Empt' &&
+        tile.variant !== 'Stne' &&
+        tile.variant !== 'TreW' &&
+        tile.variant !== 'TreS'
+    );
+}
+
+function getTileAtPosition(position) {
+    const rows = currentLevel.string
+        .trim()
+        .split('\n')
+        .map((row) => row.trim().split(' '));
+
+    const boardHeight = rows.length;
+    const boardWidth = rows[0].length;
+
+    if (
+        position.y < 0 ||
+        position.y >= boardHeight ||
+        position.x < 0 ||
+        position.x >= boardWidth
+    ) {
+        return { base: 'Empt', variant: 'None' };
+    }
+
+    const tile = rows[position.y][position.x].split('/');
+
+    return { base: tile[0], variant: tile[1] };
 }
 
 function drawLevel(p) {
     p.push();
     p.imageMode(p.CENTER);
 
-    const rows = currentLevel
+    if (!currentLevel) {
+        return;
+    }
+
+    const rows = currentLevel.string
         .trim()
         .split('\n')
         .map((row) => row.trim().split(' '));
@@ -134,6 +197,22 @@ function drawLevel(p) {
                 p.translate(0, -75);
                 p.image(assets.playerImage, 0, 0);
                 p.pop();
+
+                for (const transfer of currentLevel.transfers ?? []) {
+                    if (transfer.from.x === x && transfer.from.y === y) {
+                        if (wantsTransfer) {
+                            wantsTransfer = false;
+                            playerPosition = {
+                                x: transfer.to.x,
+                                y: transfer.to.y,
+                            };
+                            currentLevel = getLevelByName(transfer.to.level);
+                            console.log('Transferred to', currentLevel.name);
+                        } else {
+                            drawTransferMarker(p, transfer);
+                        }
+                    }
+                }
             }
 
             p.pop();
@@ -185,51 +264,30 @@ function drawLevel(p) {
     // p.pop();
 }
 
-export function keyPressed(p) {
-    let newPosition = { ...playerPosition };
-    switch (p.key) {
-        case 'w':
-            newPosition.y -= 1;
-            break;
-        case 'a':
-            newPosition.x -= 1;
-            break;
-        case 's':
-            newPosition.y += 1;
-            break;
-        case 'd':
-            newPosition.x += 1;
-            break;
-    }
-    if (isTileWalkable(newPosition)) {
-        playerPosition = newPosition;
-    }
+function drawTransferMarker(p, transfer) {
+    p.push();
+    p.fill(255, 255, 255, 200);
+    p.noStroke();
+    p.rect(-100, -120, 200, 40);
+    p.fill(0, 0, 0);
+    p.textSize(20);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.textFont('monospace');
+    p.text(`[T] Go to ${getCleanLevelName(transfer.to.level)}`, 0, -100);
+    p.pop();
 }
 
-function isTileWalkable(position) {
-    const tile = getTileAtPosition(position);
-    return (
-        tile.base !== 'Empt' &&
-        tile.variant !== 'Stne' &&
-        tile.variant !== 'TreW' &&
-        tile.variant !== 'TreS'
-    );
+function getLevelByName(name) {
+    return levels.find((level) => level.name === name) ?? null;
 }
 
-function getTileAtPosition(position) {
-    const rows = currentLevel
-        .trim()
-        .split('\n')
-        .map((row) => row.trim().split(' '));
-
-    const boardHeight = rows.length;
-    const boardWidth = rows[0].length;
-
-    if (position.y < 0 || position.y >= boardHeight || position.x < 0 || position.x >= boardWidth) {
-        return { base: 'Empt', variant: 'None' };
+function getCleanLevelName(_name) {
+    let name = getLevelByName(_name).name;
+    const matches = new RegExp('level(\\d+)').exec(name);
+    if (matches) {
+        const levelNumber = matches[1];
+        return name.replace(`level${levelNumber}`, `Level ${levelNumber}`);
+    } else {
+        return name;
     }
-
-    const tile = rows[position.y][position.x].split('/');
-
-    return { base: tile[0], variant: tile[1] };
 }
