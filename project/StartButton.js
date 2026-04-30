@@ -14,7 +14,7 @@ export default class StartButton {
             throw new Error(`Button with query "${buttonQuery}" not found`);
         }
 
-        this.button.addEventListener("click", callback);
+        this.button.addEventListener('click', callback);
     }
 
     /**
