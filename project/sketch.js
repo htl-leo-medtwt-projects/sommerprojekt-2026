@@ -130,7 +130,7 @@ function drawLevel(p) {
     const rows = getLevelArray(currentLevel);
 
     const boardWidth = options.tileWidth * rows[0].length;
-    const boardHeight = options.tileHeight * rows.length;
+    // const boardHeight = options.tileHeight * rows.length;
 
     // Update player position to be inside the board
     playerPosition.x = Math.max(

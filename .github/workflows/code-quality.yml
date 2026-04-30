@@ -23,20 +23,33 @@ jobs:
               with:
                   node-version: '20'
 
-            - name: Cache global npm packages
+            - name: Cache global and local npm packages
               uses: actions/cache@v4
               with:
-                  path: |
-                      ~/.npm
-                      node_modules
-                  key: ${{ runner.os }}-node-eslint-${{ hashFiles('.github/workflows/code-quality.yml', 'eslint.config.js') }}
+                  path: node_modules
+                  key: ${{ runner.os }}-node-eslint-${{ hashFiles('.github/workflows/code-quality.yml') }}
                   restore-keys: |
                       ${{ runner.os }}-node-eslint-
 
-            - name: Install ESLint
+            - name: Create package.json
               run: |
-                  npm install -g eslint
-                  npm install eslint-config-prettier eslint-formatter-compact
+                  cat > package.json << 'EOF'
+                  {
+                    "name": "sommerprojekt-2026",
+                    "private": true,
+                    "version": "1.0.0",
+                    "type": "module",
+                    "dependencies": {
+                      "eslint": "^10.0.0",
+                      "eslint-config-prettier": "^10.0.0",
+                      "eslint-formatter-compact": "^9.0.0",
+                      "prettier": "^3.0.0"
+                    }
+                  }
+                  EOF
+
+            - name: Install dependencies
+              run: npm install
 
             - name: Run ESLint
               id: eslint
@@ -45,7 +58,7 @@ jobs:
                   echo "" >> $GITHUB_STEP_SUMMARY
 
                   # Run ESLint and check exit code
-                  if npx eslint project/ --ext .js --format=compact > eslint-output.txt 2>&1; then
+                  if npx eslint project/ --config eslint.config.js --format=compact > eslint-output.txt 2>&1; then
                     echo "✅ No ESLint violations" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=success" >> $GITHUB_OUTPUT
                   else
@@ -55,4 +68,5 @@ jobs:
                     cat eslint-output.txt >> $GITHUB_STEP_SUMMARY
                     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
                     echo "eslint_status=failure" >> $GITHUB_OUTPUT
+                    exit 1
                   fi

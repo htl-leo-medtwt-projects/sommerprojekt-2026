@@ -1,6 +1,8 @@
 # Build documentation for the project
 # Usage: ./build-docs.sh
 
+set -e
+
 export DOCS_DIR="documentation"
 export DIST_DIR="dist"
 export PROJECT_DIR="project"

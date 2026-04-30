@@ -21,7 +21,7 @@ const startButton = new StartButton('#startBtn', () => {
 
     let p;
     const appElement = document.querySelector('#game');
-    const app = new p5((p5) => {
+    new p5((p5) => {
         p = p5;
 
         p.setup = () => setup(p);

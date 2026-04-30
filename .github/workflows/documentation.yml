@@ -1,10 +1,10 @@
-name: Deploy Docs to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
     workflow_dispatch:
     push:
         branches: ['**']
-        paths: ['documentation/**']
+        paths: ['documentation/**', 'build-docs.sh', 'project/**']
 
 permissions:
     contents: read
@@ -34,22 +34,13 @@ jobs:
             - name: Setup Pages
               uses: actions/configure-pages@v4
 
-            - name: Get pandoc cache key
-              id: pandoc-key
-              run: |
-                  PANDOC_VERSION="3.1.11"  # Fixed version for stability
-                  echo "version=$PANDOC_VERSION" >> "$GITHUB_OUTPUT"
-                  echo "key=pandoc-$PANDOC_VERSION" >> "$GITHUB_OUTPUT"
-
             - name: Cache pandoc
-              id: cache-pandoc
               uses: actions/cache@v4
               with:
-                  path: /usr/bin/pandoc
-                  key: ${{ steps.pandoc-key.outputs.key }}
+                  path: /var/lib/apt/lists
+                  key: ${{ runner.os }}-pandoc-${{ hashFiles('.github/workflows/documentation.yml') }}
 
             - name: Install pandoc
-              if: steps.cache-pandoc.outputs.cache-hit != 'true'
               run: |
                   sudo apt-get update
                   sudo apt-get install -y pandoc
@@ -58,7 +49,7 @@ jobs:
               run: ./build-docs.sh
 
             - name: Upload artifact
-              uses: actions/upload-pages-artifact@v3
+              uses: actions/upload-pages-artifact@v4
               with:
                   path: 'dist'
 
