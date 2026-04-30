@@ -59,6 +59,7 @@ export async function setup(p) {
 export function draw(p) {
     p.background('#a2a2a2');
     drawLevel(p);
+    drawMinimap(p);
 }
 
 export function keyPressed(p) {
@@ -126,10 +127,7 @@ function drawLevel(p) {
         return;
     }
 
-    const rows = currentLevel.string
-        .trim()
-        .split('\n')
-        .map((row) => row.trim().split(' '));
+    const rows = getLevelArray(currentLevel);
 
     const boardWidth = options.tileWidth * rows[0].length;
     const boardHeight = options.tileHeight * rows.length;
@@ -290,4 +288,89 @@ function getCleanLevelName(_name) {
     } else {
         return name;
     }
+}
+
+function getLevelArray(level) {
+    return level.string
+        .trim()
+        .split('\n')
+        .map((row) => row.trim().split(' '));
+}
+
+function drawMinimap(p) {
+    if (!currentLevel) return;
+
+    // Calculate minimap position, size, and center
+    const minimapSize = 150;
+    const margin = 10;
+    const minimapX = p.width - minimapSize * 0.5 - margin;
+    const minimapY = p.height - minimapSize * 0.5 - margin;
+    const gridCenterX = Math.floor(getLevelArray(currentLevel)[0].length / 2);
+    const gridCenterY = Math.floor(getLevelArray(currentLevel).length / 2);
+
+    p.push();
+    p.translate(minimapX, minimapY);
+
+    // Draw minimap background
+    p.stroke(255, 255, 255);
+    p.fill(255, 255, 255, 100);
+    p.strokeWeight(2);
+    p.rectMode(p.CENTER);
+    p.rect(0, 0, minimapSize, minimapSize, 10);
+
+    // Draw current island
+    drawIslandMinimap(p, 0, 0, true);
+
+    // Draw other islands
+    const transfers = currentLevel.transfers || [];
+    for (const transfer of transfers) {
+        const targetLevel = getLevelByName(transfer.to.level);
+        if (!targetLevel) continue;
+
+        const distance = 5;
+        const islandPos = { x: 0, y: 0 };
+
+        // Calculate island position based on transfer direction
+        if (transfer.from.x > gridCenterX) {
+            islandPos.x = 25 + distance;
+            islandPos.y = (25 + distance) * 0.5;
+        } else if (transfer.from.x < gridCenterX) {
+            islandPos.x = -(25 + distance);
+            islandPos.y = -(25 + distance) * 0.5;
+        } else if (transfer.from.y > gridCenterY) {
+            islandPos.y = (25 + distance) * 0.5;
+            islandPos.x = -(25 + distance);
+        } else if (transfer.from.y < gridCenterY) {
+            islandPos.y = -(25 + distance) * 0.5;
+            islandPos.x = 25 + distance;
+        } else {
+            // If exactly in center, place it north by default
+            islandPos.y = -(25 + distance);
+            islandPos.x = -(25 + distance) * 0.5;
+        }
+
+        drawIslandMinimap(p, islandPos.x, islandPos.y, false);
+    }
+
+    p.pop();
+}
+
+function drawIslandMinimap(p, x, y, isCurrent) {
+    p.push();
+
+    p.translate(x, y);
+
+    if (isCurrent) {
+        p.fill('#57cc82');
+        p.stroke('#469556');
+        p.strokeWeight(2);
+    } else {
+        p.fill('#57cc82dd');
+        p.stroke('#469556dd');
+        p.strokeWeight(1);
+    }
+
+    p.quad(0, -25 / 2, 25, 0, 0, 25 / 2, -25, 0);
+
+    p.pop();
 }

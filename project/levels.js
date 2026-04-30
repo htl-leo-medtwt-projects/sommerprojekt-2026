@@ -9,6 +9,39 @@ export default [
         transfers: [
             {
                 from: {
+                    x: 0,
+                    y: 1,
+                },
+                to: {
+                    level: 'level1',
+                    x: 0,
+                    y: 0,
+                },
+            },
+            {
+                from: {
+                    x: 1,
+                    y: 0,
+                },
+                to: {
+                    level: 'level1',
+                    x: 0,
+                    y: 0,
+                },
+            },
+            {
+                from: {
+                    x: 1,
+                    y: 2,
+                },
+                to: {
+                    level: 'level1',
+                    x: 0,
+                    y: 0,
+                },
+            },
+            {
+                from: {
                     x: 2,
                     y: 1,
                 },
