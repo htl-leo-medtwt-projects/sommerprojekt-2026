@@ -11,8 +11,8 @@ Benjamin, 2AHITM
 
 ## GitHub Insights
 
-<img width="896" height="527" alt="image" src="https://github.com/user-attachments/assets/3c494ec7-90a3-4394-a839-8aa60a56a6fe" />
-<img width="862" height="432" alt="image" src="https://github.com/user-attachments/assets/c2fcacb4-75f2-400c-883a-01632868dcdd" />
+<img width="875" height="527" alt="image" src="https://github.com/user-attachments/assets/7f48e501-51f6-4816-8813-89c510994d53" />
+<img width="896" height="527" alt="image" src="https://github.com/user-attachments/assets/f44d0c27-e67c-4534-b2a0-d0c45aca1426" />
 
 ## Ziele für nächsten Sprint
 
