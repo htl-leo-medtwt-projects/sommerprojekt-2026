@@ -6,6 +6,7 @@ let assets;
 let playerPosition = { x: 0, y: 0 };
 let wantsTransfer = false;
 let currentLevel;
+let otherPlayers = [];
 
 export async function setup(p) {
     assets = {
@@ -59,6 +60,12 @@ export async function setup(p) {
 
 export function draw(p) {
     p.background('#a2a2a2');
+
+    // Sync other players from window object
+    if (window.otherPlayers) {
+        otherPlayers = window.otherPlayers;
+    }
+
     drawLevel(p);
     drawMinimap(p);
     drawRoomCode(p);
@@ -85,6 +92,13 @@ export function keyPressed(p) {
     }
     if (isTileWalkable(newPosition)) {
         playerPosition = newPosition;
+        // Send position update to server
+        if (window.socket && currentRoomCode) {
+            window.socket.emit('playerMove', {
+                position: playerPosition,
+                level: currentLevel.name,
+            });
+        }
     }
 }
 
@@ -191,12 +205,13 @@ function drawLevel(p) {
                 p.image(variant, 0, variant.height / -2.2);
                 p.pop();
             }
+            // Draw current player
             if (playerPosition.x === x && playerPosition.y === y) {
-                p.push();
-                p.scale(0.8);
-                p.translate(0, -75);
-                p.image(assets.playerImage, 0, 0);
-                p.pop();
+                drawPlayer(
+                    p,
+                    assets.playerImage,
+                    window.currentPlayer?.color || '#FFFFFF',
+                );
 
                 for (const transfer of currentLevel.transfers ?? []) {
                     if (transfer.from.x === x && transfer.from.y === y) {
@@ -208,10 +223,29 @@ function drawLevel(p) {
                             };
                             currentLevel = getLevelByName(transfer.to.level);
                             console.log('Transferred to', currentLevel.name);
+
+                            // Send position update after transfer
+                            if (window.socket && currentRoomCode) {
+                                window.socket.emit('playerMove', {
+                                    position: playerPosition,
+                                    level: currentLevel.name,
+                                });
+                            }
                         } else {
                             drawTransferMarker(p, transfer);
                         }
                     }
+                }
+            }
+
+            // Draw other players
+            for (const otherPlayer of otherPlayers) {
+                if (
+                    otherPlayer.level === currentLevel.name &&
+                    otherPlayer.position.x === x &&
+                    otherPlayer.position.y === y
+                ) {
+                    drawPlayer(p, assets.playerImage, otherPlayer.color);
                 }
             }
 
@@ -373,6 +407,18 @@ function drawIslandMinimap(p, x, y, isCurrent) {
     }
 
     p.quad(0, -25 / 2, 25, 0, 0, 25 / 2, -25, 0);
+
+    p.pop();
+}
+
+function drawPlayer(p, ghostImage, color) {
+    p.push();
+    p.scale(0.8);
+    p.translate(0, -75);
+
+    // Apply color tint to ghost
+    p.tint(color);
+    p.image(ghostImage, 0, 0);
 
     p.pop();
 }

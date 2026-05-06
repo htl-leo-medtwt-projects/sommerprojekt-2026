@@ -14,7 +14,51 @@ let currentRoomCode = null;
 window.socket.on('join', (data) => {
     console.log('Joined room:', data.roomCode);
     currentRoomCode = data.roomCode;
+    window.currentPlayer = data.player;
     hideRoomDialog();
+});
+
+window.socket.on('playersUpdate', (players) => {
+    console.log('=== PLAYERS UPDATE RECEIVED ===');
+    console.log('Received players update:', players);
+    console.log('Current socket ID:', window.socket.id);
+    console.log('Filtering out current player...');
+    window.otherPlayers = players.filter((p) => p.id !== window.socket.id);
+    console.log('Other players after filter:', window.otherPlayers);
+    console.log('=== END PLAYERS UPDATE ===');
+});
+
+window.socket.on('playerJoined', (player) => {
+    console.log('Player joined:', player);
+    if (!window.otherPlayers) window.otherPlayers = [];
+    window.otherPlayers.push(player);
+});
+
+window.socket.on('playerMoved', (data) => {
+    console.log('Player moved:', data);
+    if (!window.otherPlayers) window.otherPlayers = [];
+
+    let player = window.otherPlayers.find((p) => p.id === data.playerId);
+    if (player) {
+        player.position = data.position;
+        player.level = data.level;
+        console.log(
+            `Updated player ${data.playerId} position to`,
+            data.position,
+        );
+    } else {
+        // Player not found, might be a new player that wasn't properly added
+        console.log(`Player ${data.playerId} not found in otherPlayers array`);
+    }
+});
+
+window.socket.on('playerLeft', (data) => {
+    console.log('Player left:', data);
+    if (window.otherPlayers) {
+        window.otherPlayers = window.otherPlayers.filter(
+            (p) => p.id !== data.playerId,
+        );
+    }
 });
 
 // Dialog elements
