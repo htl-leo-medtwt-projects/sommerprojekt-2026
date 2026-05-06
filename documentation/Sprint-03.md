@@ -4,10 +4,10 @@ Benjamin, 2AHITM
 
 ## Fortschritt
 
-- [x] Den Charakter am Grid bewegen
-- [X] Teleport zwischen Räumen
-- [X] Level Design Levels: Home, 1
-- [X] Minimap
+- Den Charakter am Grid bewegen
+- Teleport zwischen Räumen
+- Level Design Levels: Home, 1
+- Minimap
 
 ## GitHub Insights
 
