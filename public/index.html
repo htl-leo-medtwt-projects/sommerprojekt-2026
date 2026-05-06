@@ -13,5 +13,21 @@
         <link rel="stylesheet" href="style.css" />
     </head>
 
-    <body></body>
+    <body>
+        <!-- Room Dialog -->
+        <dialog id="roomDialog">
+            <h2>Game Room</h2>
+            <button id="createRoomBtn">Create Room</button>
+            <div id="joinSection">
+                <input
+                    type="text"
+                    id="roomCodeInput"
+                    placeholder="Enter 6-digit code"
+                    maxlength="6"
+                />
+                <button id="submitJoinBtn">Join</button>
+            </div>
+            <button id="closeDialogBtn" style="margin-top: 10px">Close</button>
+        </dialog>
+    </body>
 </html>

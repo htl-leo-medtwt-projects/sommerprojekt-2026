@@ -1,5 +1,6 @@
 import levels from './levels.js';
 import options from './options.js';
+import { currentRoomCode } from './index.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
@@ -60,6 +61,7 @@ export function draw(p) {
     p.background('#a2a2a2');
     drawLevel(p);
     drawMinimap(p);
+    drawRoomCode(p);
 }
 
 export function keyPressed(p) {
@@ -373,4 +375,32 @@ function drawIslandMinimap(p, x, y, isCurrent) {
     p.quad(0, -25 / 2, 25, 0, 0, 25 / 2, -25, 0);
 
     p.pop();
+}
+
+function drawRoomCode(p) {
+    if (currentRoomCode) {
+        p.push();
+
+        // Position in top right corner
+        const margin = 20;
+        const x = p.width - margin;
+        const y = margin;
+
+        // Draw background box
+        p.fill(255, 255, 255, 200);
+        p.stroke(0);
+        p.strokeWeight(2);
+        p.rectMode(p.CORNER);
+        p.rect(x - 120, y, 120, 40, 5);
+
+        // Draw room code text
+        p.fill(0);
+        p.noStroke();
+        p.textAlign(p.RIGHT, p.CENTER);
+        p.textSize(16);
+        p.textFont('monospace');
+        p.text(`Room: ${currentRoomCode}`, x - 10, y + 20);
+
+        p.pop();
+    }
 }

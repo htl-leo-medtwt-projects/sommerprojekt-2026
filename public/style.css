@@ -6,9 +6,80 @@
 
 body {
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     background: #f0f0f0;
+    position: relative;
+}
+
+/* Dialog Styles */
+#roomDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-width: 300px;
+    text-align: center;
+}
+
+#roomDialog h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+#roomDialog button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: #57cc82;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.2s;
+    margin-bottom: 15px;
+}
+
+#roomDialog button:hover {
+    background: #469556;
+}
+
+#roomDialog input {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    margin-right: 10px;
+    width: 120px;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+#joinSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+#joinSection button {
+    margin-bottom: 0;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+#closeDialogBtn {
+    background: #e74c3c;
+}
+
+#closeDialogBtn:hover {
+    background: #c0392b;
 }
