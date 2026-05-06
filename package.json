@@ -1,0 +1,20 @@
+{
+  "name": "dungeoner",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "lint": "eslint . --config eslint.config.js --format=compact"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "type": "module",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "eslint": "^10.3.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-formatter-compact": "^9.0.1",
+    "express": "^5.2.1",
+    "prettier": "^3.8.3",
+    "socket.io": "^4.8.3",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,3 +1,0 @@
-# Prototyp
-
-[Figma-Prototyp](https://www.figma.com/proto/yxRJYT0aCCo0cgIVL25RR2/Sommer2026?node-id=8-125&p=f&m=dev&scaling=scale-down&content-scaling=fixed&page-id=8%3A124&starting-point-node-id=8%3A125&t=FQrEnmWr1puWDpnU-1)
