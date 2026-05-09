@@ -211,6 +211,7 @@ function drawLevel(p) {
                         }
                     }
                 }
+                wantsTransfer = false;
             }
 
             p.pop();
