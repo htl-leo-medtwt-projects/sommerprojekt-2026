@@ -45,7 +45,7 @@ export async function setup(p) {
             TreS: await p.loadImage('./assets/winter/winter (23).png'), // Summer Tree
         },
 
-        playerImage: await p.loadImage('./assets/ghost/ghost (15).png'), // White ghost
+        playerImage: await p.loadImage('./assets/ghost/ghost (13).png'), // Green ghost
     };
 
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -191,8 +191,8 @@ function drawLevel(p) {
             }
             if (playerPosition.x === x && playerPosition.y === y) {
                 p.push();
-                p.scale(0.8);
-                p.translate(0, -75);
+                p.scale(0.5);
+                p.translate(0, -90 + -20 * Math.cos(p.frameCount * 0.04));
                 p.image(assets.playerImage, 0, 0);
                 p.pop();
 
