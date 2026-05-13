@@ -7,10 +7,11 @@
         {
             "name": "Launch Level Designer",
             "request": "launch",
-            "runtimeArgs": ["dev"],
+            "runtimeArgs": ["dev", "--open"],
             "runtimeExecutable": "pnpm",
             "skipFiles": ["<node_internals>/**"],
             "type": "node",
+            "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/level-designer"
         }
     ]
