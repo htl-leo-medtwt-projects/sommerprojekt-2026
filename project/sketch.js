@@ -54,6 +54,7 @@ export async function setup(p) {
     };
 
     currentLevel = getLevelByName('home');
+    loadState();
 }
 
 export function draw(p) {
@@ -83,6 +84,7 @@ export function keyPressed(p) {
     }
     if (isTileWalkable(newPosition)) {
         playerPosition = newPosition;
+        saveState();
     }
 }
 
@@ -205,6 +207,7 @@ function drawLevel(p) {
                                 y: transfer.to.y,
                             };
                             currentLevel = getLevelByName(transfer.to.level);
+                            saveState();
                             console.log('Transferred to', currentLevel.name);
                         } else {
                             drawTransferMarker(p, transfer);
@@ -374,4 +377,29 @@ function drawIslandMinimap(p, x, y, isCurrent) {
     p.quad(0, -25 / 2, 25, 0, 0, 25 / 2, -25, 0);
 
     p.pop();
+}
+
+/**
+ * Saves the current game state to localStorage
+ */
+function saveState() {
+    localStorage.setItem(
+        'saveState',
+        JSON.stringify({
+            currentLevel,
+            playerPosition,
+        }),
+    );
+}
+
+/**
+ * Loads the game state from localStorage
+ */
+function loadState() {
+    const savedState = localStorage.getItem('saveState');
+    if (savedState) {
+        const state = JSON.parse(savedState);
+        currentLevel = state.currentLevel;
+        playerPosition = state.playerPosition;
+    }
 }

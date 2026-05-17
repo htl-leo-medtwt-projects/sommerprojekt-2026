@@ -5,9 +5,9 @@ Benjamin, 2AHITM
 ## Fortschritt
 
 - Level Design Levels: 2, 3
+- (Automatisches) Speichersystem mit *localStorage*
 - [ ] Gegner
 - [ ] Item System
-- [ ] Save/Load System
 - [ ] Store
 
 ## GitHub Insights
