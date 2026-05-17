@@ -6,10 +6,13 @@ Benjamin, 2AHITM
 
 - Level Design Levels: 2, 3
 - (Automatisches) Speichersystem mit *localStorage*
-- [ ] Gegner
-- [ ] Item System
-- [ ] Store
+- Gegner und Beute
 
 ## GitHub Insights
 
 ## Ziele für nächsten Sprint
+
+- Store fürs kaufen von Items
+- Bessere Kämpfe
+- Mehr Gegner, mehr Level, ...
+- Tode

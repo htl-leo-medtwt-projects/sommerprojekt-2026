@@ -19,6 +19,13 @@ export default [
                 },
             },
         ],
+        opponents: [
+            {
+                type: 0,
+                x: 1,
+                y: 1,
+            }
+        ]
     },
     {
         name: 'level1',

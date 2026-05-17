@@ -1,11 +1,18 @@
 import levels from './levels.js';
 import options from './options.js';
+import opponents from './opponents.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
+let playerBalance = 0;
+let killedOpponents = [];
 let wantsTransfer = false;
 let currentLevel;
 
+/**
+ * Handle p5 setup
+ * @param {p5} p p5.js Object
+ */
 export async function setup(p) {
     assets = {
         baseMap: {
@@ -44,6 +51,14 @@ export async function setup(p) {
             TreW: await p.loadImage('./assets/winter/winter (22).png'), // Winter Tree
             TreS: await p.loadImage('./assets/winter/winter (23).png'), // Summer Tree
         },
+        opponents: Object.fromEntries(
+            await Promise.all(
+                opponents.map(async (opponent) => [
+                    opponent.id,
+                    await p.loadImage(opponent.sprite),
+                ]),
+            ),
+        ),
 
         playerImage: await p.loadImage('./assets/ghost/ghost (13).png'), // Green ghost
     };
@@ -57,12 +72,21 @@ export async function setup(p) {
     loadState();
 }
 
+/**
+ * Handle p5 loop
+ * @param {p5} p p5.js Object
+ */
 export function draw(p) {
     p.background('#a2a2a2');
     drawLevel(p);
     drawMinimap(p);
+    drawBalance(p);
 }
 
+/**
+ * Handle p5 key presses
+ * @param {p5} p p5.js Object
+ */
 export function keyPressed(p) {
     let newPosition = { ...playerPosition };
     switch (p.key) {
@@ -88,6 +112,11 @@ export function keyPressed(p) {
     }
 }
 
+/**
+ * Checks if the tile at the given position is walkable
+ * @param {{x: number, y: number}} position
+ * @returns {boolean}
+ */
 function isTileWalkable(position) {
     const tile = getTileAtPosition(position);
     return (
@@ -98,6 +127,11 @@ function isTileWalkable(position) {
     );
 }
 
+/**
+ * Gets the tile at the given position
+ * @param {{x: number, y: number}} position
+ * @returns {{base: string, variant: string}}
+ */
 function getTileAtPosition(position) {
     const rows = currentLevel.string
         .trim()
@@ -121,6 +155,10 @@ function getTileAtPosition(position) {
     return { base: tile[0], variant: tile[1] };
 }
 
+/**
+ * Draws the current level
+ * @param {p5} p p5.js Object
+ */
 function drawLevel(p) {
     p.push();
     p.imageMode(p.CENTER);
@@ -191,6 +229,34 @@ function drawLevel(p) {
                 p.image(variant, 0, variant.height / -2.2);
                 p.pop();
             }
+            // Draw opponents
+            for (const opponent of currentLevel.opponents ?? []) {
+                if (
+                    opponent.x === x &&
+                    opponent.y === y &&
+                    !killedOpponents.some(
+                        (v) =>
+                            v.opponent.x === x &&
+                            v.opponent.y === y &&
+                            v.level === currentLevel.name,
+                    )
+                ) {
+                    console.log(killedOpponents, x, y)
+                    p.push();
+                    p.scale(0.5);
+                    p.translate(
+                        20 * Math.sin(p.frameCount * 0.02),
+                        -90 + -20 * Math.cos(p.frameCount * 0.1),
+                    );
+                    p.image(assets.opponents[opponent.type], 0, 0);
+                    p.pop();
+
+                    if (playerPosition.x === x && playerPosition.y === y) {
+                        playerOpponentCollision(opponent);
+                    }
+                }
+            }
+
             if (playerPosition.x === x && playerPosition.y === y) {
                 p.push();
                 p.scale(0.5);
@@ -222,50 +288,13 @@ function drawLevel(p) {
     }
 
     p.pop();
-
-    // ------- Draw Guide Lines -------
-    // p.push();
-    // p.stroke(100, 0, 0);
-
-    // // X axis lines
-    // for (let i = 0; i <= boardWidth; i += tileWidth) {
-    //     p.line(i, 0, i, boardHeight);
-    // }
-
-    // // Y axis lines (only surface)
-    // for (let i = 0; i <= boardHeight; i += tileHeight - 45) {
-    //     p.line(0, i, boardWidth, i);
-    // }
-
-    // p.stroke(0, 0, 100);
-
-    // for (let i = tileWidth / 2; i <= boardWidth; i += tileWidth) {
-    //     p.line(i, 0, i, boardHeight);
-    // }
-
-    // for (
-    //     let i = (tileHeight - 45) / 2;
-    //     i <= boardHeight;
-    //     i += tileHeight - 45
-    // ) {
-    //     p.line(0, i, boardWidth, i);
-    // }
-
-    // p.stroke(0, 0, 255, 100);
-
-    // for (let i = 0; i <= boardHeight; i += tileHeight) {
-    //     p.line(0, i, boardWidth, i);
-    // }
-
-    // p.stroke(255, 0, 0);
-    // p.strokeWeight(2);
-
-    // // draw grid
-    // p.line(0, boardHeight / 2, boardWidth, boardHeight / 2);
-    // p.line(boardWidth / 2, 0, boardWidth / 2, boardHeight);
-    // p.pop();
 }
 
+/**
+ * Draws a transfer marker at the given position
+ * @param {p5} p p5.js Object
+ * @param {Object} transfer The transfer object
+ */
 function drawTransferMarker(p, transfer) {
     p.push();
     p.fill(255, 255, 255, 200);
@@ -279,10 +308,20 @@ function drawTransferMarker(p, transfer) {
     p.pop();
 }
 
+/**
+ * Returns a level by its name
+ * @param {string} name The level name
+ * @returns {Object} The level object
+ */
 function getLevelByName(name) {
     return levels.find((level) => level.name === name) ?? null;
 }
 
+/**
+ * Returns a clean level name for display
+ * @param {string} _name The level name
+ * @returns {string} The clean level name
+ */
 function getCleanLevelName(_name) {
     let name = getLevelByName(_name).name;
     const matches = new RegExp('level(\\d+)').exec(name);
@@ -294,6 +333,11 @@ function getCleanLevelName(_name) {
     }
 }
 
+/**
+ * Converts a level string to a 2D array
+ * @param {Object} level The level object
+ * @returns {string[][]} 2D array representation of the level
+ */
 function getLevelArray(level) {
     return level.string
         .trim()
@@ -301,6 +345,10 @@ function getLevelArray(level) {
         .map((row) => row.trim().split(' '));
 }
 
+/**
+ * Draws the minimap in the bottom right corner
+ * @param {p5} p p5.js Object
+ */
 function drawMinimap(p) {
     if (!currentLevel) return;
 
@@ -359,6 +407,13 @@ function drawMinimap(p) {
     p.pop();
 }
 
+/**
+ * Draws one island for the minimap
+ * @param {p5} p p5.js Object
+ * @param {number} x X position of the island in minimap coordinates
+ * @param {number} y Y position of the island in minimap coordinates
+ * @param {boolean} isCurrent Whether this is the current island
+ */
 function drawIslandMinimap(p, x, y, isCurrent) {
     p.push();
 
@@ -388,6 +443,8 @@ function saveState() {
         JSON.stringify({
             currentLevel,
             playerPosition,
+            playerBalance,
+            killedOpponents
         }),
     );
 }
@@ -401,5 +458,34 @@ function loadState() {
         const state = JSON.parse(savedState);
         currentLevel = state.currentLevel;
         playerPosition = state.playerPosition;
+        playerBalance = state.playerBalance;
+        killedOpponents = state.killedOpponents;
     }
+}
+
+/**
+ * Handles collision between player and opponent
+ * @param {*} opponent the opponent that was collided with
+ */
+function playerOpponentCollision(opponent) {
+    const type = opponents.find((o) => o.id === opponent.type);
+    console.log('Player collided with', type.name);
+    killedOpponents.push({ level: currentLevel.name, opponent });
+
+    playerBalance +=
+        type.lootables.min +
+        Math.floor(
+            Math.random() * (type.lootables.max - type.lootables.min + 1),
+        );
+}
+
+/**
+ * Draws the player's balance
+ * @param {p5} p p5.js Object
+ */
+function drawBalance(p) {
+    p.fill(255);
+    p.textAlign(p.LEFT, p.TOP);
+    p.textSize(16);
+    p.text(`Balance: ${playerBalance}`, 10, 10);
 }
