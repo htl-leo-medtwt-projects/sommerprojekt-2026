@@ -5,10 +5,10 @@ Benjamin, 2AHITM
 ## Fortschritt
 
 - Hintergrundmusik
+- Schöneres HUD Design
 - [ ] Store fürs kaufen von Items
 - [ ] Bessere Kämpfe & Tode
 - [ ] Mehr Gegner, mehr Level, ...
-- [ ] Schöneres HUD design
 - [ ] Zufälliges Dungeon-Design
 
 ## GitHub Insights

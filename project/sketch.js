@@ -192,7 +192,18 @@ function drawLevel(p) {
     // p.rect(0, 0, boardWidth, boardHeight);
     // p.pop();
 
-    p.translate(boardWidth * 0.6, options.tileHeight * 1.2);
+    // Calculate center of the board in isometric coordinates
+    const centerX = (rows[0].length - 1) / 2;
+    const centerY = (rows.length - 1) / 2;
+    const offset = 40;
+    const boardCenterX =
+        ((centerX - centerY) * (options.tileWidth + offset)) / 2;
+    const boardCenterY =
+        ((centerX + centerY) * (options.tileHeight + offset)) / 2 -
+        (45 * (centerX + centerY)) / 2;
+
+    // Translate to center of screen, then offset by board center
+    p.translate(p.width / 2 - boardCenterX, p.height / 2 - boardCenterY);
 
     // throw new Error(JSON.stringify(rows));
     for (let y = 0; y < rows.length; y++) {
@@ -490,8 +501,27 @@ function playerOpponentCollision(opponent) {
  * @param {p5} p p5.js Object
  */
 function drawBalance(p) {
+    p.push();
     p.fill(255);
     p.textAlign(p.LEFT, p.TOP);
     p.textSize(16);
-    p.text(`Balance: ${playerBalance}`, 10, 10);
+    p.push();
+    p.textFont('lucide');
+    p.text(`\n`, 10, 10);
+    p.pop();
+    p.text(`${playerLives}\n${playerBalance}`, 30, 12);
+    p.pop();
+}
+
+function addHit(text, color = 'white') {
+    const startSize = Math.random() * 40 + 10;
+    currentHits.push({
+        text,
+        rotation: (Math.random() - 0.5) * 20 * (Math.PI / 180), // plus 10deg to minus 10 deg
+        minSize: startSize,
+        maxSize: startSize - 20,
+        length: Math.random() * 2000 + 1000, // ms
+        startTime: Date.now(),
+        color,
+    });
 }
