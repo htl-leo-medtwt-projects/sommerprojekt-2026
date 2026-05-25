@@ -76,6 +76,7 @@ export async function setup(p) {
     assets.backgroundMusic.play();
 
     loadState();
+    document.querySelector('#loader')?.remove();
 }
 
 /**
