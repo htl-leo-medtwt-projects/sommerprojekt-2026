@@ -61,6 +61,9 @@ export async function setup(p) {
         ),
 
         playerImage: await p.loadImage('./assets/ghost/ghost (13).png'), // Green ghost
+        backgroundMusic: await p.loadSound(
+            './assets/elias_weber-auf-grunen-wiesen-127713.mp3',
+        ),
     };
 
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -69,6 +72,9 @@ export async function setup(p) {
     };
 
     currentLevel = getLevelByName('home');
+    assets.backgroundMusic.loop();
+    assets.backgroundMusic.play();
+
     loadState();
 }
 
@@ -241,7 +247,6 @@ function drawLevel(p) {
                             v.level === currentLevel.name,
                     )
                 ) {
-                    console.log(killedOpponents, x, y)
                     p.push();
                     p.scale(0.5);
                     p.translate(
