@@ -148,11 +148,15 @@ dialog {
 
 .guide {
     font-family: var(--body-font-family);
-    font-size: var(--body-font-size);
+    font-size: 1.4rem;
     width: fit-content;
     max-width: 80%;
     margin: 1rem auto;
     color: white;
+
+    h3, p {
+        margin-bottom: 14px;
+    }
 }
 
 .heading {
@@ -180,11 +184,15 @@ dialog {
 
 footer {
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     background: #2c2c2c;
     padding: 1rem;
     color: white;
     font-family: var(--body-font-family);
+
+    p, h3 {
+        margin-bottom: 5px;
+    }
 
     .mobile {
         display: none;
@@ -192,6 +200,11 @@ footer {
 
     .desktop {
         display: block;
+    }
+
+    a {
+        color: white;
+        text-decoration: dashed underline;
     }
 }
 

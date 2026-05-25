@@ -1,4 +1,4 @@
-# Sommerprojekt 2026 - Sprint 02
+# Sommerprojekt 2026 - Sprint 03
 
 Benjamin, 2AHITM
 
