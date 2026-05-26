@@ -5,9 +5,12 @@ import opponents from './opponents.js';
 let assets;
 let playerPosition = { x: 0, y: 0 };
 let playerBalance = 0;
+let playerLives = options.defaultLives;
 let killedOpponents = [];
 let wantsTransfer = false;
 let currentLevel;
+let currentHits = [];
+let lastCombatTime = new Date();
 
 /**
  * Handle p5 setup
@@ -50,6 +53,7 @@ export async function setup(p) {
             Stne: await p.loadImage('./assets/winter/winter (21).png'), // Big Stone
             TreW: await p.loadImage('./assets/winter/winter (22).png'), // Winter Tree
             TreS: await p.loadImage('./assets/winter/winter (23).png'), // Summer Tree
+            Shop: await p.loadImage('./assets/ghost/ghost (11).png'), // Shop
         },
         opponents: Object.fromEntries(
             await Promise.all(
@@ -64,6 +68,8 @@ export async function setup(p) {
         backgroundMusic: await p.loadSound(
             './assets/elias_weber-auf-grunen-wiesen-127713.mp3',
         ),
+        playerMovement: await p.loadSound('./assets/dragon-studio-simple-whoosh-382724.mp3'),
+        playerHit: await p.loadSound('./assets/u_xjrmmgxfru-hit-flesh-02-266309.mp3'),
     };
 
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -291,13 +297,39 @@ function drawLevel(p) {
                             };
                             currentLevel = getLevelByName(transfer.to.level);
                             saveState();
+                            assets.playerMovement.play();
                             console.log('Transferred to', currentLevel.name);
                         } else {
                             drawTransferMarker(p, transfer);
                         }
                     }
                 }
+
+                for (const hit of currentHits) {
+                    p.push();
+                    p.translate(0, -50);
+                    p.rotate(hit.rotation);
+                    p.fill(hit.color);
+                    p.textAlign(p.CENTER);
+                    // Interpolate Text size from min to max over the hit's lifetime
+                    p.textSize(
+                        hit.minSize +
+                            (hit.maxSize - hit.minSize) *
+                                ((Date.now() - hit.startTime) / hit.length),
+                    );
+                    p.text(hit.text, 0, 0);
+                    p.pop();
+
+                    if (Date.now() - hit.startTime > hit.length) {
+                        currentHits.splice(currentHits.indexOf(hit), 1);
+                    }
+                }
+
                 wantsTransfer = false;
+
+                if (variant === assets.varMap.Shop) {
+                    // TODO: Add Shop
+                }
             }
 
             p.pop();
@@ -461,7 +493,8 @@ function saveState() {
             currentLevel,
             playerPosition,
             playerBalance,
-            killedOpponents
+            killedOpponents,
+            playerLives,
         }),
     );
 }
@@ -477,6 +510,7 @@ function loadState() {
         playerPosition = state.playerPosition;
         playerBalance = state.playerBalance;
         killedOpponents = state.killedOpponents;
+        playerLives = state.playerLives;
     }
 }
 
@@ -485,15 +519,8 @@ function loadState() {
  * @param {*} opponent the opponent that was collided with
  */
 function playerOpponentCollision(opponent) {
-    const type = opponents.find((o) => o.id === opponent.type);
-    console.log('Player collided with', type.name);
-    killedOpponents.push({ level: currentLevel.name, opponent });
-
-    playerBalance +=
-        type.lootables.min +
-        Math.floor(
-            Math.random() * (type.lootables.max - type.lootables.min + 1),
-        );
+    addHit('Hit!', 'red');
+    assets.playerHit.play();
 }
 
 /**

@@ -3,7 +3,7 @@ export default [
         name: 'home',
         string: `
             GrSu/Plyr Gren/Path Empt/None
-            Gren/Flr4 Gren/Path Wood/None
+            Gren/Shop Gren/Path Wood/None
             Gren/Flr2 Gren/SgnR Empt/None
         `,
         transfers: [
@@ -24,8 +24,8 @@ export default [
                 type: 0,
                 x: 1,
                 y: 1,
-            }
-        ]
+            },
+        ],
     },
     {
         name: 'level1',
@@ -58,6 +58,13 @@ export default [
                     x: 0,
                     y: 3,
                 },
+            },
+        ],
+        opponents: [
+            {
+                type: 1,
+                x: 0,
+                y: 2,
             },
         ],
     },
