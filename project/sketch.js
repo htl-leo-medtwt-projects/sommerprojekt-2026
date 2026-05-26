@@ -5,12 +5,16 @@ import opponents from './opponents.js';
 let assets;
 let playerPosition = { x: 0, y: 0 };
 let playerBalance = 0;
-let playerLives = options.defaultLives;
+let playerDefense = 0;
+let playerAttack = 1;
+let currentFight;
+let playerHealth = options.defaultHealth;
 let killedOpponents = [];
 let wantsTransfer = false;
 let currentLevel;
 let currentHits = [];
-let lastCombatTime = new Date();
+let lastCombatTime = Date.now();
+let lastCombatTick = 0;
 
 /**
  * Handle p5 setup
@@ -68,8 +72,12 @@ export async function setup(p) {
         backgroundMusic: await p.loadSound(
             './assets/elias_weber-auf-grunen-wiesen-127713.mp3',
         ),
-        playerMovement: await p.loadSound('./assets/dragon-studio-simple-whoosh-382724.mp3'),
-        playerHit: await p.loadSound('./assets/u_xjrmmgxfru-hit-flesh-02-266309.mp3'),
+        playerMovement: await p.loadSound(
+            './assets/dragon-studio-simple-whoosh-382724.mp3',
+        ),
+        playerHit: await p.loadSound(
+            './assets/u_xjrmmgxfru-hit-flesh-02-266309.mp3',
+        ),
     };
 
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -274,7 +282,11 @@ function drawLevel(p) {
                     p.image(assets.opponents[opponent.type], 0, 0);
                     p.pop();
 
-                    if (playerPosition.x === x && playerPosition.y === y) {
+                    if (
+                        playerPosition.x === x &&
+                        playerPosition.y === y &&
+                        !currentFight
+                    ) {
                         playerOpponentCollision(opponent);
                     }
                 }
@@ -329,6 +341,77 @@ function drawLevel(p) {
 
                 if (variant === assets.varMap.Shop) {
                     // TODO: Add Shop
+                }
+                if (currentFight) {
+                    if (Date.now() > lastCombatTime + currentFight.cooldown) {
+                        console.log(
+                            `Combat tick: ${lastCombatTick} Opponent: ${currentFight.type.name} Health: ${currentFight.opponentHealth} Player Health: ${playerHealth}`,
+                        );
+                        // Damage on Player = Attack of Opponent - Defense of Player
+                        // Damage on Opponent = Attack of Player - Defense of Opponent
+                        const opponentAttack = Math.floor(
+                            currentFight.type.attack.min +
+                                (currentFight.type.attack.max -
+                                    currentFight.type.attack.min) *
+                                    Math.random(),
+                        );
+                        const opponenrDefense = Math.floor(
+                            currentFight.type.defense.min +
+                                (currentFight.type.defense.max -
+                                    currentFight.type.defense.min) *
+                                    Math.random(),
+                        );
+
+                        if (lastCombatTick % 2 == 0) {
+                            const absolutePlayerDamage = Math.max(
+                                0,
+                                opponentAttack - opponenrDefense,
+                            );
+
+                            playerHealth -= absolutePlayerDamage;
+                            addHit(`-${absolutePlayerDamage}`, 'red');
+                        } else {
+                            const absoluteOpponentDamage = Math.max(
+                                0,
+                                opponentAttack - opponenrDefense,
+                            );
+                            currentFight.opponentHealth -=
+                                absoluteOpponentDamage;
+                            addHit(`-${absoluteOpponentDamage}`, 'white');
+                        }
+                        if (playerHealth <= 0) {
+                            playerHealth = 0;
+                            // TODO: Handle player death
+                        }
+                        if (currentFight.opponentHealth <= 0) {
+                            currentFight.opponentHealth = 0;
+
+                            killedOpponents.push({
+                                level: currentLevel.name,
+                                opponent: currentFight.type,
+                            });
+                            currentLevel.opponents.splice(
+                                currentLevel.opponents.indexOf(
+                                    currentFight.type,
+                                ),
+                                1,
+                            );
+
+                            playerBalance +=
+                                currentFight.type.lootables.min +
+                                Math.floor(
+                                    Math.random() *
+                                        (currentFight.type.lootables.max -
+                                            currentFight.type.lootables.min +
+                                            1),
+                                );
+
+                            currentFight = null;
+                            addHit(`+${playerBalance}`, 'green');
+                        }
+                        lastCombatTime = Date.now();
+                        lastCombatTick++;
+                    }
                 }
             }
 
@@ -494,7 +577,7 @@ function saveState() {
             playerPosition,
             playerBalance,
             killedOpponents,
-            playerLives,
+            playerLives: playerHealth,
         }),
     );
 }
@@ -510,7 +593,7 @@ function loadState() {
         playerPosition = state.playerPosition;
         playerBalance = state.playerBalance;
         killedOpponents = state.killedOpponents;
-        playerLives = state.playerLives;
+        playerHealth = state.playerLives;
     }
 }
 
@@ -519,8 +602,14 @@ function loadState() {
  * @param {*} opponent the opponent that was collided with
  */
 function playerOpponentCollision(opponent) {
-    addHit('Hit!', 'red');
-    assets.playerHit.play();
+    console.log(opponent);
+    const type = opponents[opponent.type];
+    currentFight = {
+        opponent: opponent,
+        type: type,
+        cooldown: 1000,
+        opponentHealth: type.lives,
+    };
 }
 
 /**
@@ -536,7 +625,7 @@ function drawBalance(p) {
     p.textFont('lucide');
     p.text(`\n`, 10, 10);
     p.pop();
-    p.text(`${playerLives}\n${playerBalance}`, 30, 12);
+    p.text(`${playerHealth}\n${playerBalance}`, 30, 12);
     p.pop();
 }
 

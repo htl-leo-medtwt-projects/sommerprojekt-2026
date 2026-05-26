@@ -6,8 +6,9 @@ Benjamin, 2AHITM
 
 - Hintergrundmusik
 - Schöneres HUD Design
+- Bessere Kämpfe & Tode
+- [ ] Spieler Tod / Game Over
 - [ ] Store fürs kaufen von Items
-- [ ] Bessere Kämpfe & Tode
 - [ ] Mehr Gegner, mehr Level, ...
 - [ ] Zufälliges Dungeon-Design
 
