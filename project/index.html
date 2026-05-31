@@ -32,6 +32,7 @@
                 <p class="subtitle">An isometric dungeon crawler</p>
                 <div class="action">
                     <button class="primary" id="startBtn">Start Game</button>
+                    <button class="secondary" id="shopBtn">🏪 Shop</button>
                     <button class="secondary" id="optionsBtn">Options</button>
                 </div>
             </div>
@@ -96,6 +97,40 @@
                 </button>
             </div>
         </dialog>
+        <dialog id="shop">
+            <div class="dialog-header">
+                <h2>🏪 Shop</h2>
+                <span class="dialog-close">×</span>
+            </div>
+            <div class="dialog-content">
+                <div class="shop-header">
+                    <div class="gold-display">
+                        <span class="gold-icon">💰</span>
+                        <span id="goldAmount">0</span> Gold
+                    </div>
+                </div>
+                <div class="shop-tabs">
+                    <button class="shop-tab active" data-category="weapons">
+                        ⚔️ Weapons
+                    </button>
+                    <button class="shop-tab" data-category="armor">
+                        🛡️ Armor
+                    </button>
+                    <button class="shop-tab" data-category="potions">
+                        🧪 Potions
+                    </button>
+                </div>
+                <div class="shop-items" id="shopItems">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+                <div class="shop-inventory">
+                    <h3>🎒 Your Items</h3>
+                    <div id="ownedItems" class="owned-items">
+                        <!-- Owned items will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </dialog>
         <footer>
             <p>
                 &copy; 2026 Benjamin <br />
@@ -137,9 +172,27 @@
                     rel="noopener noreferrer"
                     >Lucide License</a
                 >
-                <br>
-                Sound Effect by <a href="https://pixabay.com/users/dragon-studio-38165424/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=382724">DRAGON-STUDIO</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=382724">Pixabay</a>
-                Sound Effect by <a href="https://pixabay.com/users/u_xjrmmgxfru-47169417/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=266309">u_xjrmmgxfru</a> from <a href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=266309">Pixabay</a>
+                <br />
+                Sound Effect by
+                <a
+                    href="https://pixabay.com/users/dragon-studio-38165424/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=382724"
+                    >DRAGON-STUDIO</a
+                >
+                from
+                <a
+                    href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=382724"
+                    >Pixabay</a
+                >
+                Sound Effect by
+                <a
+                    href="https://pixabay.com/users/u_xjrmmgxfru-47169417/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=266309"
+                    >u_xjrmmgxfru</a
+                >
+                from
+                <a
+                    href="https://pixabay.com/sound-effects//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=266309"
+                    >Pixabay</a
+                >
             </p>
         </footer>
     </body>

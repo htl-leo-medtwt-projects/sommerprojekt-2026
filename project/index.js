@@ -1,9 +1,12 @@
 import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
-import { setup, draw, keyPressed } from './sketch.js';
+import Shop from './Shop.js';
+import { setup, draw, keyPressed, setShop } from './sketch.js';
 
 console.clear();
 const optionsDialog = new Dialog('#options', '#optionsBtn');
+const shop = new Shop();
+setShop(shop);
 const startButton = new StartButton('#startBtn', () => {
     optionsDialog.close();
     startButton.disable();

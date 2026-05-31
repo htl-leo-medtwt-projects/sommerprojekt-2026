@@ -7,6 +7,7 @@ Benjamin, 2AHITM
 - Hintergrundmusik
 - Schöneres HUD Design
 - Bessere Kämpfe & Tode
+- Store fürs kaufen von Items
 - [ ] Spieler Tod / Game Over
 - [ ] Store fürs kaufen von Items
 - [ ] Mehr Gegner, mehr Level, ...

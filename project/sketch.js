@@ -15,6 +15,18 @@ let currentLevel;
 let currentHits = [];
 let lastCombatTime = Date.now();
 let lastCombatTick = 0;
+let shopInstance = null;
+let lastShopTile = null;
+
+export function setShop(shop) {
+    shopInstance = shop;
+    shop.setBalanceCallbacks(
+        () => playerBalance,
+        (newBalance) => {
+            playerBalance = newBalance;
+        },
+    );
+}
 
 /**
  * Handle p5 setup
@@ -341,8 +353,15 @@ function drawLevel(p) {
                 wantsTransfer = false;
 
                 if (variant === assets.varMap.Shop) {
-                    // TODO: Add Shop
+                    const currentShopTile = `${playerPosition.x},${playerPosition.y}`;
+                    if (shopInstance && currentShopTile !== lastShopTile) {
+                        shopInstance.open();
+                        lastShopTile = currentShopTile;
+                    }
+                } else {
+                    lastShopTile = null;
                 }
+                
                 if (currentFight) {
                     if (Date.now() > lastCombatTime + currentFight.cooldown) {
                         // Damage on Player = Attack of Opponent - Defense of Player

@@ -39,6 +39,13 @@ export default class Dialog {
     }
 
     /**
+     * Opens the dialog
+     */
+    open() {
+        this.dialog.showModal();
+    }
+
+    /**
      * Closes the dialog
      */
     close() {
