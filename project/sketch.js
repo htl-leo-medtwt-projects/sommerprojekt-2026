@@ -127,7 +127,7 @@ export function keyPressed(p) {
             wantsTransfer = true;
             return;
     }
-    if (isTileWalkable(newPosition)) {
+    if (isTileWalkable(newPosition) && !currentFight) {
         playerPosition = newPosition;
         saveState();
     }
@@ -288,6 +288,7 @@ function drawLevel(p) {
                         !currentFight
                     ) {
                         playerOpponentCollision(opponent);
+                        console.log('Collided with', opponent);
                     }
                 }
             }
@@ -310,7 +311,6 @@ function drawLevel(p) {
                             currentLevel = getLevelByName(transfer.to.level);
                             saveState();
                             assets.playerMovement.play();
-                            console.log('Transferred to', currentLevel.name);
                         } else {
                             drawTransferMarker(p, transfer);
                         }
@@ -323,6 +323,7 @@ function drawLevel(p) {
                     p.rotate(hit.rotation);
                     p.fill(hit.color);
                     p.textAlign(p.CENTER);
+                    p.translate(hit.xOffset, hit.yOffset);
                     // Interpolate Text size from min to max over the hit's lifetime
                     p.textSize(
                         hit.minSize +
@@ -344,9 +345,6 @@ function drawLevel(p) {
                 }
                 if (currentFight) {
                     if (Date.now() > lastCombatTime + currentFight.cooldown) {
-                        console.log(
-                            `Combat tick: ${lastCombatTick} Opponent: ${currentFight.type.name} Health: ${currentFight.opponentHealth} Player Health: ${playerHealth}`,
-                        );
                         // Damage on Player = Attack of Opponent - Defense of Player
                         // Damage on Opponent = Attack of Player - Defense of Opponent
                         const opponentAttack = Math.floor(
@@ -388,7 +386,7 @@ function drawLevel(p) {
 
                             killedOpponents.push({
                                 level: currentLevel.name,
-                                opponent: currentFight.type,
+                                opponent: currentFight.opponent,
                             });
                             currentLevel.opponents.splice(
                                 currentLevel.opponents.indexOf(
@@ -397,14 +395,17 @@ function drawLevel(p) {
                                 1,
                             );
 
-                            playerBalance +=
+                            playerBalance += Math.max(
+                                0,
                                 currentFight.type.lootables.min +
-                                Math.floor(
-                                    Math.random() *
-                                        (currentFight.type.lootables.max -
-                                            currentFight.type.lootables.min +
-                                            1),
-                                );
+                                    Math.floor(
+                                        Math.random() *
+                                            (currentFight.type.lootables.max -
+                                                currentFight.type.lootables
+                                                    .min +
+                                                1),
+                                    ),
+                            );
 
                             currentFight = null;
                             addHit(`+${playerBalance}`, 'green');
@@ -602,7 +603,6 @@ function loadState() {
  * @param {*} opponent the opponent that was collided with
  */
 function playerOpponentCollision(opponent) {
-    console.log(opponent);
     const type = opponents[opponent.type];
     currentFight = {
         opponent: opponent,
@@ -630,7 +630,7 @@ function drawBalance(p) {
 }
 
 function addHit(text, color = 'white') {
-    const startSize = Math.random() * 40 + 10;
+    const startSize = Math.random() * 30 + 20;
     currentHits.push({
         text,
         rotation: (Math.random() - 0.5) * 20 * (Math.PI / 180), // plus 10deg to minus 10 deg
@@ -639,5 +639,7 @@ function addHit(text, color = 'white') {
         length: Math.random() * 2000 + 1000, // ms
         startTime: Date.now(),
         color,
+        xOffset: Math.random() * 100 - 50,
+        yOffset: Math.random() * 100 - 50,
     });
 }
