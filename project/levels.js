@@ -12,11 +12,6 @@ export default [
                     x: 2,
                     y: 1,
                 },
-                to: {
-                    level: 'level1',
-                    x: 0,
-                    y: 0,
-                },
             },
         ],
         opponents: [
@@ -47,21 +42,11 @@ export default [
                     x: 0,
                     y: 0,
                 },
-                to: {
-                    level: 'home',
-                    x: 2,
-                    y: 1,
-                },
             },
             {
                 from: {
                     x: 4,
                     y: 4,
-                },
-                to: {
-                    level: 'level2',
-                    x: 0,
-                    y: 3,
                 },
             },
         ],
@@ -106,21 +91,11 @@ export default [
                     x: 0,
                     y: 3,
                 },
-                to: {
-                    level: 'level1',
-                    x: 4,
-                    y: 4,
-                },
             },
             {
                 from: {
                     x: 7,
                     y: 2,
-                },
-                to: {
-                    level: 'level3',
-                    x: 0,
-                    y: 1,
                 },
             },
         ],
@@ -172,21 +147,11 @@ export default [
                     x: 0,
                     y: 1,
                 },
-                to: {
-                    level: 'level2',
-                    x: 7,
-                    y: 2,
-                },
             },
             {
                 from: {
                     x: 4,
                     y: 4,
-                },
-                to: {
-                    level: 'home',
-                    x: 1,
-                    y: 1,
                 },
             },
         ],
@@ -217,5 +182,24 @@ export default [
                 y: 2,
             },
         ],
+    },
+    {
+        name: 'portal_home',
+        string: `
+            Empt/None Empt/None Empt/None Empt/None Empt/None
+            Empt/None Gren/Plyr Gren/Path Empt/None Empt/None
+            Empt/None Gren/Path Gren/SgnH Empt/None Empt/None
+            Empt/None Empt/None Empt/None Empt/None Empt/None
+            Empt/None Empt/None Empt/None Empt/None Empt/None
+        `,
+        transfers: [
+            {
+                from: {
+                    x: 2,
+                    y: 2,
+                },
+            },
+        ],
+        opponents: [],
     },
 ];

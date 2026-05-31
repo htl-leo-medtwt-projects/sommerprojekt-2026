@@ -32,8 +32,20 @@
                 <p class="subtitle">An isometric dungeon crawler</p>
                 <div class="action">
                     <button class="primary" id="startBtn">Start Game</button>
-                    <button class="secondary" id="shopBtn">🏪 Shop</button>
-                    <button class="secondary" id="optionsBtn">Options</button>
+                    <button
+                        class="secondary"
+                        id="shopBtn"
+                        style="display: none"
+                    >
+                        🏪 Shop
+                    </button>
+                    <button
+                        class="secondary"
+                        id="optionsBtn"
+                        style="display: none"
+                    >
+                        Options
+                    </button>
                 </div>
             </div>
             <h2 class="heading">How to Play</h2>
@@ -103,10 +115,24 @@
                 <span class="dialog-close">×</span>
             </div>
             <div class="dialog-content">
+                <div class="shop-message" id="shopMessage"></div>
                 <div class="shop-header">
                     <div class="gold-display">
                         <span class="gold-icon lucide-icon">coins</span>
                         <span id="goldAmount">0</span> Gold
+                        <span class="deposited-display">
+                            <span class="lucide-icon">piggy-bank</span>
+                            <span id="depositedAmount">0</span>
+                        </span>
+                    </div>
+                    <div class="bank-actions">
+                        <button id="depositBtn" class="deposit-btn">
+                            <span class="lucide-icon">piggy-bank</span> Deposit
+                        </button>
+                        <button id="withdrawBtn" class="withdraw-btn">
+                            <span class="lucide-icon">arrow-up-circle</span>
+                            Withdraw
+                        </button>
                     </div>
                 </div>
                 <div class="shop-tabs">
@@ -115,9 +141,6 @@
                     </button>
                     <button class="shop-tab" data-category="armor">
                         <span class="lucide-icon">shield</span> Armor
-                    </button>
-                    <button class="shop-tab" data-category="potions">
-                        <span class="lucide-icon">flask-conical</span> Potions
                     </button>
                 </div>
                 <div class="shop-items" id="shopItems">
@@ -129,6 +152,19 @@
                         <!-- Owned items will be displayed here -->
                     </div>
                 </div>
+            </div>
+        </dialog>
+        <dialog id="gameOver">
+            <div class="dialog-header">
+                <h2><span class="lucide-icon">skull</span> Game Over</h2>
+            </div>
+            <div class="dialog-content">
+                <p>You have lost all your hearts!</p>
+                <p>
+                    Your equipment has been preserved, but your progress has
+                    been reset.
+                </p>
+                <button id="respawnBtn" class="respawn-btn">Respawn</button>
             </div>
         </dialog>
         <footer>

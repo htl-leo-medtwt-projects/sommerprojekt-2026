@@ -1,11 +1,18 @@
 import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
 import Shop from './Shop.js';
-import { setup, draw, keyPressed, setShop } from './sketch.js';
+import {
+    setup,
+    draw,
+    keyPressed,
+    setShop,
+    respawn,
+    calculatePlayerStats,
+} from './sketch.js';
 
-console.clear();
 const optionsDialog = new Dialog('#options', '#optionsBtn');
 const shop = new Shop();
+shop.setStatCalculator(calculatePlayerStats);
 setShop(shop);
 const startButton = new StartButton('#startBtn', () => {
     optionsDialog.close();
@@ -37,3 +44,6 @@ const startButton = new StartButton('#startBtn', () => {
 if (localStorage.getItem('debug') != null) {
     startButton.button.dispatchEvent(new Event('click'));
 }
+
+// Wire up respawn button
+document.getElementById('respawnBtn')?.addEventListener('click', respawn);

@@ -5,16 +5,23 @@ export default class Shop extends Dialog {
     constructor() {
         super('#shop', '#shopBtn');
         this.currentCategory = 'weapons';
-        this.gold = 100;
+        this.gold = 0;
         this.ownedItems = JSON.parse(localStorage.getItem('ownedItems')) || {};
+        this.depositedGold =
+            parseInt(localStorage.getItem('depositedGold')) || 0;
         this.getPlayerBalance = null;
         this.setPlayerBalance = null;
+        this.calculatePlayerStats = null;
         this.init();
     }
 
     setBalanceCallbacks(getBalance, setBalance) {
         this.getPlayerBalance = getBalance;
         this.setPlayerBalance = setBalance;
+    }
+
+    setStatCalculator(calculator) {
+        this.calculatePlayerStats = calculator;
     }
 
     init() {
@@ -27,6 +34,17 @@ export default class Shop extends Dialog {
                 this.renderShop();
             });
         });
+
+        const depositBtn = document.getElementById('depositBtn');
+        if (depositBtn) {
+            depositBtn.addEventListener('click', () => this.depositGold());
+        }
+
+        const withdrawBtn = document.getElementById('withdrawBtn');
+        if (withdrawBtn) {
+            withdrawBtn.addEventListener('click', () => this.withdrawGold());
+        }
+
         this.renderShop();
         this.updateGoldDisplay();
         this.renderOwnedItems();
@@ -60,15 +78,6 @@ export default class Shop extends Dialog {
         if (item.defense) {
             statsHtml += `<span class="lucide-icon">shield</span> ${item.defense}`;
         }
-        if (item.healAmount) {
-            statsHtml += `<span class="lucide-icon">heart</span> +${item.healAmount}`;
-        }
-        if (item.damageBoost) {
-            statsHtml += `<span class="lucide-icon">arm-flex</span> +${item.damageBoost}`;
-        }
-        if (item.defenseBoost) {
-            statsHtml += `<span class="lucide-icon">shield</span> +${item.defenseBoost}`;
-        }
 
         itemElement.innerHTML = `
             <div class="shop-item-icon lucide-icon">${item.icon}</div>
@@ -79,7 +88,7 @@ export default class Shop extends Dialog {
             <div class="shop-item-price"><span class="lucide-icon">coins</span> ${item.price}</div>
             <button class="shop-item-buy ${isOwned ? 'owned' : ''}"
                     ${!canAfford && !isOwned ? 'disabled' : ''}>
-                ${isOwned ? (item.consumable ? 'Buy More' : 'Owned') : 'Buy'}
+                ${isOwned ? 'Owned' : 'Buy'}
             </button>
         `;
 
@@ -94,7 +103,7 @@ export default class Shop extends Dialog {
             ? this.getPlayerBalance()
             : this.gold;
         if (currentGold < item.price) {
-            alert('Not enough gold!');
+            this.showMessage('Not enough gold!');
             return;
         }
 
@@ -104,25 +113,30 @@ export default class Shop extends Dialog {
             this.gold -= item.price;
         }
 
-        if (item.consumable) {
-            this.ownedItems[item.id] = (this.ownedItems[item.id] || 0) + 1;
-        } else {
-            this.ownedItems[item.id] = true;
-        }
+        this.ownedItems[item.id] = true;
 
         localStorage.setItem('ownedItems', JSON.stringify(this.ownedItems));
 
         this.updateGoldDisplay();
         this.renderShop();
         this.renderOwnedItems();
+
+        // Recalculate player stats after buying an item
+        if (this.calculatePlayerStats) {
+            this.calculatePlayerStats();
+        }
     }
 
     updateGoldDisplay() {
         const goldDisplay = document.getElementById('goldAmount');
+        const depositedDisplay = document.getElementById('depositedAmount');
         const currentGold = this.getPlayerBalance
             ? this.getPlayerBalance()
             : this.gold;
         goldDisplay.textContent = currentGold;
+        if (depositedDisplay) {
+            depositedDisplay.textContent = this.depositedGold;
+        }
     }
 
     renderOwnedItems() {
@@ -140,15 +154,11 @@ export default class Shop extends Dialog {
             const item = this.findItemById(itemId);
             if (!item) return;
 
-            const count = this.ownedItems[itemId];
-            const isConsumable = item.consumable;
-
             const ownedItemElement = document.createElement('div');
             ownedItemElement.className = 'owned-item';
             ownedItemElement.innerHTML = `
                 <span class="owned-item-icon lucide-icon">${item.icon}</span>
                 <span class="owned-item-name">${item.name}</span>
-                ${isConsumable ? `<span class="owned-item-count">${count}</span>` : ''}
             `;
 
             ownedItemsContainer.appendChild(ownedItemElement);
@@ -166,8 +176,78 @@ export default class Shop extends Dialog {
     open() {
         super.open();
         this.ownedItems = JSON.parse(localStorage.getItem('ownedItems')) || {};
+        this.depositedGold =
+            parseInt(localStorage.getItem('depositedGold')) || 0;
         this.updateGoldDisplay();
         this.renderShop();
         this.renderOwnedItems();
+        this.hideMessage();
+
+        // Recalculate player stats when shop opens (in case items were added externally)
+        if (this.calculatePlayerStats) {
+            this.calculatePlayerStats();
+        }
+    }
+
+    showMessage(message) {
+        const messageElement = document.getElementById('shopMessage');
+        if (messageElement) {
+            messageElement.textContent = message;
+            messageElement.classList.add('show');
+            setTimeout(() => {
+                this.hideMessage();
+            }, 3000);
+        }
+    }
+
+    hideMessage() {
+        const messageElement = document.getElementById('shopMessage');
+        if (messageElement) {
+            messageElement.classList.remove('show');
+        }
+    }
+
+    depositGold() {
+        const currentGold = this.getPlayerBalance
+            ? this.getPlayerBalance()
+            : this.gold;
+        if (currentGold <= 0) {
+            this.showMessage('No gold to deposit!');
+            return;
+        }
+
+        this.depositedGold += currentGold;
+        localStorage.setItem('depositedGold', this.depositedGold.toString());
+
+        if (this.setPlayerBalance) {
+            this.setPlayerBalance(0);
+        } else {
+            this.gold = 0;
+        }
+
+        this.updateGoldDisplay();
+    }
+
+    withdrawGold() {
+        if (this.depositedGold <= 0) {
+            this.showMessage('No deposited gold to withdraw!');
+            return;
+        }
+
+        const currentGold = this.getPlayerBalance
+            ? this.getPlayerBalance()
+            : this.gold;
+        const withdrawAmount = this.depositedGold;
+
+        if (this.setPlayerBalance) {
+            this.setPlayerBalance(currentGold + withdrawAmount);
+        } else {
+            this.gold += withdrawAmount;
+        }
+
+        this.depositedGold = 0;
+        localStorage.setItem('depositedGold', '0');
+
+        this.updateGoldDisplay();
     }
 }

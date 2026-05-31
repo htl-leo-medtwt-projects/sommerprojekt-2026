@@ -8,8 +8,8 @@ Benjamin, 2AHITM
 - Schöneres HUD Design
 - Bessere Kämpfe & Tode
 - Store fürs kaufen von Items
-- [ ] Spieler Tod / Game Over
-- [ ] Zufälliges Dungeon-Design
+- Spieler Tod / Game Over
+- Zufälliges Dungeon-Design
 
 ## GitHub Insights
 

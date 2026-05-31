@@ -1,6 +1,7 @@
 import levels from './levels.js';
 import options from './options.js';
 import opponents from './opponents.js';
+import shopItems from './shopItems.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
@@ -17,6 +18,8 @@ let lastCombatTime = Date.now();
 let lastCombatTick = 0;
 let shopInstance = null;
 let lastShopTile = null;
+let levelSequence = [];
+let currentSequenceIndex = 0;
 
 export function setShop(shop) {
     shopInstance = shop;
@@ -26,6 +29,32 @@ export function setShop(shop) {
             playerBalance = newBalance;
         },
     );
+}
+
+/**
+ * Calculates player attack and defense from owned items
+ */
+export function calculatePlayerStats() {
+    const ownedItems = shopInstance?.ownedItems || {};
+    let totalAttack = 1;
+    let totalDefense = 0;
+
+    for (const itemId in ownedItems) {
+        if (ownedItems[itemId]) {
+            const item = shopInstance?.findItemById(itemId);
+            if (item) {
+                if (item.damage) {
+                    totalAttack += item.damage;
+                }
+                if (item.defense) {
+                    totalDefense += item.defense;
+                }
+            }
+        }
+    }
+
+    playerAttack = totalAttack;
+    playerDefense = totalDefense;
 }
 
 /**
@@ -97,11 +126,17 @@ export async function setup(p) {
         p.resizeCanvas(window.innerWidth, window.innerHeight);
     };
 
-    currentLevel = getLevelByName('home');
+    loadState();
+    calculatePlayerStats();
+
+    // Set currentLevel after loading state (so mapping is applied)
+    if (!currentLevel) {
+        currentLevel = getLevelByName('home');
+    }
+
     assets.backgroundMusic.loop();
     assets.backgroundMusic.play();
 
-    loadState();
     document.querySelector('#loader')?.remove();
 }
 
@@ -139,7 +174,11 @@ export function keyPressed(p) {
             wantsTransfer = true;
             return;
     }
-    if (isTileWalkable(newPosition) && !currentFight) {
+    if (
+        isTileWalkable(newPosition) &&
+        !currentFight &&
+        !shopInstance.dialog.open
+    ) {
         playerPosition = newPosition;
         saveState();
     }
@@ -316,11 +355,36 @@ function drawLevel(p) {
                     if (transfer.from.x === x && transfer.from.y === y) {
                         if (wantsTransfer) {
                             wantsTransfer = false;
-                            playerPosition = {
-                                x: transfer.to.x,
-                                y: transfer.to.y,
-                            };
-                            currentLevel = getLevelByName(transfer.to.level);
+                            let destinationLevel;
+
+                            // Check if this transfer is at the Plyr position (back transfer)
+                            const spawnPosition =
+                                findPlayerSpawnPosition(currentLevel);
+                            const isBackTransfer =
+                                transfer.from.x === spawnPosition.x &&
+                                transfer.from.y === spawnPosition.y;
+
+                            // If current level is home, start the sequence
+                            if (currentLevel.name === 'home') {
+                                destinationLevel = getNextLevelInSequence();
+                            }
+                            // If current level is portal_home, go back to home
+                            else if (currentLevel.name === 'portal_home') {
+                                destinationLevel = getLevelByName('home');
+                            }
+                            // If this is the back transfer (at Plyr position), go back in sequence
+                            else if (isBackTransfer) {
+                                destinationLevel = getPreviousLevelInSequence();
+                            }
+                            // Otherwise, continue the sequence forward
+                            else {
+                                destinationLevel = getNextLevelInSequence();
+                            }
+
+                            const destSpawnPosition =
+                                findPlayerSpawnPosition(destinationLevel);
+                            playerPosition = destSpawnPosition;
+                            currentLevel = destinationLevel;
                             saveState();
                             assets.playerMovement.play();
                         } else {
@@ -361,7 +425,7 @@ function drawLevel(p) {
                 } else {
                     lastShopTile = null;
                 }
-                
+
                 if (currentFight) {
                     if (Date.now() > lastCombatTime + currentFight.cooldown) {
                         // Damage on Player = Attack of Opponent - Defense of Player
@@ -372,7 +436,7 @@ function drawLevel(p) {
                                     currentFight.type.attack.min) *
                                     Math.random(),
                         );
-                        const opponenrDefense = Math.floor(
+                        const opponentDefense = Math.floor(
                             currentFight.type.defense.min +
                                 (currentFight.type.defense.max -
                                     currentFight.type.defense.min) *
@@ -382,7 +446,7 @@ function drawLevel(p) {
                         if (lastCombatTick % 2 == 0) {
                             const absolutePlayerDamage = Math.max(
                                 0,
-                                opponentAttack - opponenrDefense,
+                                opponentAttack - playerDefense,
                             );
 
                             playerHealth -= absolutePlayerDamage;
@@ -390,7 +454,7 @@ function drawLevel(p) {
                         } else {
                             const absoluteOpponentDamage = Math.max(
                                 0,
-                                opponentAttack - opponenrDefense,
+                                playerAttack - opponentDefense,
                             );
                             currentFight.opponentHealth -=
                                 absoluteOpponentDamage;
@@ -398,9 +462,8 @@ function drawLevel(p) {
                         }
                         if (playerHealth <= 0) {
                             playerHealth = 0;
-                            // TODO: Handle player death
-                        }
-                        if (currentFight.opponentHealth <= 0) {
+                            handleGameOver();
+                        } else if (currentFight.opponentHealth <= 0) {
                             currentFight.opponentHealth = 0;
 
                             killedOpponents.push({
@@ -456,7 +519,25 @@ function drawTransferMarker(p, transfer) {
     p.textSize(20);
     p.textAlign(p.CENTER, p.CENTER);
     p.textFont('monospace');
-    p.text(`[T] Go to ${getCleanLevelName(transfer.to.level)}`, 0, -100);
+
+    // Check if this transfer is at the Plyr position (back transfer)
+    const spawnPosition = findPlayerSpawnPosition(currentLevel);
+    const isBackTransfer =
+        transfer.from.x === spawnPosition.x &&
+        transfer.from.y === spawnPosition.y;
+
+    let destinationText;
+    if (currentLevel.name === 'home') {
+        destinationText = '[T] Enter Dungeon';
+    } else if (currentLevel.name === 'portal_home') {
+        destinationText = '[T] Return Home';
+    } else if (isBackTransfer) {
+        destinationText = '[T] Go Back';
+    } else {
+        const levelsRemaining = levelSequence.length - currentSequenceIndex;
+        destinationText = `[T] Next Level (${levelsRemaining} remaining)`;
+    }
+    p.text(destinationText, 0, -100);
     p.pop();
 }
 
@@ -470,19 +551,92 @@ function getLevelByName(name) {
 }
 
 /**
- * Returns a clean level name for display
- * @param {string} _name The level name
- * @returns {string} The clean level name
+ * Finds the player spawn position (Plyr tile) in a level
+ * @param {Object} level The level object
+ * @returns {{x: number, y: number}} The spawn position
  */
-function getCleanLevelName(_name) {
-    let name = getLevelByName(_name).name;
-    const matches = new RegExp('level(\\d+)').exec(name);
-    if (matches) {
-        const levelNumber = matches[1];
-        return name.replace(`level${levelNumber}`, `Level ${levelNumber}`);
-    } else {
-        return name;
+function findPlayerSpawnPosition(level) {
+    const rows = getLevelArray(level);
+    for (let y = 0; y < rows.length; y++) {
+        for (let x = 0; x < rows[y].length; x++) {
+            const tile = rows[y][x].split('/');
+            if (tile[1] === 'Plyr') {
+                return { x, y };
+            }
+        }
     }
+    // Default to (0, 0) if no Plyr tile found
+    return { x: 0, y: 0 };
+}
+
+/**
+ * Selects a random dungeon level (excluding home and current level)
+ * @returns {Object} The randomly selected level
+ */
+function selectRandomDungeonLevel() {
+    const dungeonLevels = levels.filter(
+        (level) => level.name !== 'home' && level.name !== currentLevel.name,
+    );
+    if (dungeonLevels.length === 0) {
+        return getLevelByName('home');
+    }
+    const randomIndex = Math.floor(Math.random() * dungeonLevels.length);
+    return dungeonLevels[randomIndex];
+}
+
+/**
+ * Generates a random level sequence for the dungeon
+ * 10 random dungeon levels (can repeat) + 1 portal home level
+ */
+function generateLevelSequence() {
+    const dungeonLevels = levels.filter(
+        (level) => level.name !== 'home' && level.name !== 'portal_home',
+    );
+
+    const sequence = [];
+
+    // Generate 10 random dungeon levels (can repeat)
+    for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * dungeonLevels.length);
+        sequence.push(dungeonLevels[randomIndex].name);
+    }
+
+    // Add portal home as the 11th level
+    sequence.push('portal_home');
+
+    return sequence;
+}
+
+/**
+ * Gets the next level in the sequence
+ * @returns {Object} The next level in the sequence
+ */
+function getNextLevelInSequence() {
+    if (currentSequenceIndex >= levelSequence.length) {
+        // If we've completed the sequence, go back to home
+        return getLevelByName('home');
+    }
+
+    const nextLevelName = levelSequence[currentSequenceIndex];
+    currentSequenceIndex++;
+
+    return getLevelByName(nextLevelName);
+}
+
+/**
+ * Gets the previous level in the sequence
+ * @returns {Object} The previous level in the sequence
+ */
+function getPreviousLevelInSequence() {
+    if (currentSequenceIndex <= 0) {
+        // If we're at the start of the sequence, go back to home
+        return getLevelByName('home');
+    }
+
+    currentSequenceIndex--;
+    const previousLevelName = levelSequence[currentSequenceIndex];
+
+    return getLevelByName(previousLevelName);
 }
 
 /**
@@ -525,12 +679,9 @@ function drawMinimap(p) {
     // Draw current island
     drawIslandMinimap(p, 0, 0, true);
 
-    // Draw other islands
+    // Draw transfer indicators (since destinations are now random, just show exits exist)
     const transfers = currentLevel.transfers || [];
     for (const transfer of transfers) {
-        const targetLevel = getLevelByName(transfer.to.level);
-        if (!targetLevel) continue;
-
         const distance = 5;
         const islandPos = { x: 0, y: 0 };
 
@@ -593,11 +744,14 @@ function saveState() {
     localStorage.setItem(
         'saveState',
         JSON.stringify({
-            currentLevel,
+            currentLevelName: currentLevel.name,
             playerPosition,
             playerBalance,
             killedOpponents,
             playerLives: playerHealth,
+            ownedItems: shop.ownedItems,
+            levelSequence,
+            currentSequenceIndex,
         }),
     );
 }
@@ -609,12 +763,24 @@ function loadState() {
     const savedState = localStorage.getItem('saveState');
     if (savedState) {
         const state = JSON.parse(savedState);
-        currentLevel = state.currentLevel;
         playerPosition = state.playerPosition;
         playerBalance = state.playerBalance;
         killedOpponents = state.killedOpponents;
         playerHealth = state.playerLives;
+        shopInstance.ownedItems = state.ownedItems;
+        levelSequence = state.levelSequence || [];
+        currentSequenceIndex = state.currentSequenceIndex || 0;
+
+        // Reconstruct currentLevel using the saved name
+        if (state.currentLevelName) {
+            currentLevel = getLevelByName(state.currentLevelName);
+        }
+    } else {
+        // Generate new sequence on first play
+        levelSequence = generateLevelSequence();
+        currentSequenceIndex = 0;
     }
+    calculatePlayerStats();
 }
 
 /**
@@ -661,4 +827,46 @@ function addHit(text, color = 'white') {
         xOffset: Math.random() * 100 - 50,
         yOffset: Math.random() * 100 - 50,
     });
+}
+
+/**
+ * Handles game over when player loses all hearts
+ */
+function handleGameOver() {
+    currentFight = null;
+    const gameOverDialog = document.getElementById('gameOver');
+    if (gameOverDialog) {
+        gameOverDialog.showModal();
+    }
+}
+
+/**
+ * Respawns the player, clearing progress but keeping equipment
+ */
+export function respawn() {
+    // Clear progress state
+    currentLevel = getLevelByName('home');
+    playerPosition = { x: 0, y: 0 };
+    playerBalance = 0;
+    killedOpponents = [];
+    playerHealth = options.defaultHealth;
+    currentFight = null;
+    currentHits = [];
+    lastCombatTime = Date.now();
+    lastCombatTick = 0;
+
+    // Generate new level sequence for new playthrough
+    levelSequence = generateLevelSequence();
+    currentSequenceIndex = 0;
+
+    // Keep ownedItems (equipment) - don't clear it
+
+    // Save the new state
+    saveState();
+
+    // Close the game over dialog
+    const gameOverDialog = document.getElementById('gameOver');
+    if (gameOverDialog) {
+        gameOverDialog.close();
+    }
 }
