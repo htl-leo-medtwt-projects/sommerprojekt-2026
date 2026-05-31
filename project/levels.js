@@ -25,6 +25,11 @@ export default [
                 x: 1,
                 y: 1,
             },
+            {
+                type: 8,
+                x: 2,
+                y: 2,
+            },
         ],
     },
     {
@@ -66,6 +71,21 @@ export default [
                 x: 0,
                 y: 2,
             },
+            {
+                type: 3,
+                x: 2,
+                y: 0,
+            },
+            {
+                type: 5,
+                x: 3,
+                y: 3,
+            },
+            {
+                type: 8,
+                x: 4,
+                y: 1,
+            },
         ],
     },
     {
@@ -104,6 +124,38 @@ export default [
                 },
             },
         ],
+        opponents: [
+            {
+                type: 5,
+                x: 2,
+                y: 2,
+            },
+            {
+                type: 3,
+                x: 4,
+                y: 1,
+            },
+            {
+                type: 6,
+                x: 5,
+                y: 4,
+            },
+            {
+                type: 2,
+                x: 6,
+                y: 6,
+            },
+            {
+                type: 8,
+                x: 3,
+                y: 5,
+            },
+            {
+                type: 10,
+                x: 1,
+                y: 6,
+            },
+        ],
     },
     {
         name: 'level3',
@@ -136,6 +188,33 @@ export default [
                     x: 1,
                     y: 1,
                 },
+            },
+        ],
+        opponents: [
+            {
+                type: 7,
+                x: 3,
+                y: 2,
+            },
+            {
+                type: 4,
+                x: 5,
+                y: 1,
+            },
+            {
+                type: 9,
+                x: 6,
+                y: 3,
+            },
+            {
+                type: 11,
+                x: 2,
+                y: 3,
+            },
+            {
+                type: 3,
+                x: 4,
+                y: 2,
             },
         ],
     },

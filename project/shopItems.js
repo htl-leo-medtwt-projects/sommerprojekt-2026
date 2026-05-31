@@ -6,8 +6,8 @@ export default {
             description: 'A basic wooden sword. Better than nothing.',
             price: 50,
             damage: 2,
-            icon: '⚔️',
-            rarity: 'common'
+            icon: 'sword',
+            rarity: 'common',
         },
         {
             id: 'iron_sword',
@@ -15,8 +15,8 @@ export default {
             description: 'A sturdy iron sword. Reliable and effective.',
             price: 150,
             damage: 5,
-            icon: '🗡️',
-            rarity: 'common'
+            icon: 'swords',
+            rarity: 'common',
         },
         {
             id: 'steel_blade',
@@ -24,8 +24,8 @@ export default {
             description: 'A sharp steel blade. Cuts through armor.',
             price: 300,
             damage: 8,
-            icon: '⚔️',
-            rarity: 'uncommon'
+            icon: 'crosshair',
+            rarity: 'uncommon',
         },
         {
             id: 'flame_sword',
@@ -33,8 +33,8 @@ export default {
             description: 'A sword imbued with fire magic. Burns enemies.',
             price: 600,
             damage: 12,
-            icon: '🔥',
-            rarity: 'rare'
+            icon: 'flame',
+            rarity: 'rare',
         },
         {
             id: 'dragon_slayer',
@@ -42,9 +42,9 @@ export default {
             description: 'Legendary sword that can slay dragons.',
             price: 1200,
             damage: 20,
-            icon: '🐉',
-            rarity: 'legendary'
-        }
+            icon: 'crown',
+            rarity: 'legendary',
+        },
     ],
     armor: [
         {
@@ -53,8 +53,8 @@ export default {
             description: 'Basic leather protection. Light and flexible.',
             price: 40,
             defense: 2,
-            icon: '🛡️',
-            rarity: 'common'
+            icon: 'shield',
+            rarity: 'common',
         },
         {
             id: 'chain_mail',
@@ -62,8 +62,8 @@ export default {
             description: 'Interlocked metal rings. Good protection.',
             price: 120,
             defense: 5,
-            icon: '🔗',
-            rarity: 'common'
+            icon: 'link',
+            rarity: 'common',
         },
         {
             id: 'plate_armor',
@@ -71,8 +71,8 @@ export default {
             description: 'Heavy metal plates. Excellent defense.',
             price: 250,
             defense: 8,
-            icon: '🛡️',
-            rarity: 'uncommon'
+            icon: 'shield-check',
+            rarity: 'uncommon',
         },
         {
             id: 'magic_robe',
@@ -80,8 +80,8 @@ export default {
             description: 'Enchanted robe that deflects spells.',
             price: 500,
             defense: 12,
-            icon: '✨',
-            rarity: 'rare'
+            icon: 'sparkles',
+            rarity: 'rare',
         },
         {
             id: 'divine_armor',
@@ -89,9 +89,9 @@ export default {
             description: 'Blessed armor with divine protection.',
             price: 1000,
             defense: 18,
-            icon: '👼',
-            rarity: 'legendary'
-        }
+            icon: 'shield-check',
+            rarity: 'legendary',
+        },
     ],
     potions: [
         {
@@ -100,9 +100,9 @@ export default {
             description: 'Restores 3 health points. One-time use.',
             price: 25,
             healAmount: 3,
-            icon: '🧪',
+            icon: 'flask-conical',
             rarity: 'common',
-            consumable: true
+            consumable: true,
         },
         {
             id: 'health_potion_medium',
@@ -110,9 +110,9 @@ export default {
             description: 'Restores 6 health points. One-time use.',
             price: 50,
             healAmount: 6,
-            icon: '🧪',
+            icon: 'flask-conical',
             rarity: 'uncommon',
-            consumable: true
+            consumable: true,
         },
         {
             id: 'health_potion_large',
@@ -120,9 +120,9 @@ export default {
             description: 'Restores 10 health points. One-time use.',
             price: 100,
             healAmount: 10,
-            icon: '🧪',
+            icon: 'flask-conical',
             rarity: 'rare',
-            consumable: true
+            consumable: true,
         },
         {
             id: 'strength_potion',
@@ -130,9 +130,9 @@ export default {
             description: 'Temporarily increases damage by 5 for one battle.',
             price: 75,
             damageBoost: 5,
-            icon: '💪',
+            icon: 'arm-flex',
             rarity: 'uncommon',
-            consumable: true
+            consumable: true,
         },
         {
             id: 'shield_potion',
@@ -140,9 +140,9 @@ export default {
             description: 'Temporarily increases defense by 5 for one battle.',
             price: 75,
             defenseBoost: 5,
-            icon: '🔰',
+            icon: 'shield',
             rarity: 'uncommon',
-            consumable: true
+            consumable: true,
         },
         {
             id: 'luck_potion',
@@ -150,9 +150,9 @@ export default {
             description: 'Increases chance of finding rare items.',
             price: 150,
             luckBoost: true,
-            icon: '🍀',
+            icon: 'clover',
             rarity: 'rare',
-            consumable: true
-        }
-    ]
+            consumable: true,
+        },
+    ],
 };

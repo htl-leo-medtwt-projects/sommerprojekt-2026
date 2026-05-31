@@ -9,12 +9,13 @@ Benjamin, 2AHITM
 - Bessere Kämpfe & Tode
 - Store fürs kaufen von Items
 - [ ] Spieler Tod / Game Over
-- [ ] Store fürs kaufen von Items
-- [ ] Mehr Gegner, mehr Level, ...
 - [ ] Zufälliges Dungeon-Design
 
 ## GitHub Insights
 
 ## Ziele bis Endabgabe
 
-- [ ] Hintergrundgeschichte
+- Hintergrundgeschichte
+- Mehr Gegner, mehr Level, ...
+- Guide-Block auf Landing Page schreiben
+- evtl. Optionen befüllen

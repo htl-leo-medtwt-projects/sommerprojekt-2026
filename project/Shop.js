@@ -55,29 +55,29 @@ export default class Shop extends Dialog {
 
         let statsHtml = '';
         if (item.damage) {
-            statsHtml += `<span>⚔️ ${item.damage}</span>`;
+            statsHtml += `<span class="lucide-icon">sword</span> ${item.damage}`;
         }
         if (item.defense) {
-            statsHtml += `<span>🛡️ ${item.defense}</span>`;
+            statsHtml += `<span class="lucide-icon">shield</span> ${item.defense}`;
         }
         if (item.healAmount) {
-            statsHtml += `<span>❤️ +${item.healAmount}</span>`;
+            statsHtml += `<span class="lucide-icon">heart</span> +${item.healAmount}`;
         }
         if (item.damageBoost) {
-            statsHtml += `<span>💪 +${item.damageBoost}</span>`;
+            statsHtml += `<span class="lucide-icon">arm-flex</span> +${item.damageBoost}`;
         }
         if (item.defenseBoost) {
-            statsHtml += `<span>🔰 +${item.defenseBoost}</span>`;
+            statsHtml += `<span class="lucide-icon">shield</span> +${item.defenseBoost}`;
         }
 
         itemElement.innerHTML = `
-            <div class="shop-item-icon">${item.icon}</div>
+            <div class="shop-item-icon lucide-icon">${item.icon}</div>
             <div class="shop-item-name">${item.name}</div>
             <div class="rarity-badge ${item.rarity}">${item.rarity}</div>
             <div class="shop-item-description">${item.description}</div>
             ${statsHtml ? `<div class="shop-item-stats">${statsHtml}</div>` : ''}
-            <div class="shop-item-price">💰 ${item.price}</div>
-            <button class="shop-item-buy ${isOwned ? 'owned' : ''}" 
+            <div class="shop-item-price"><span class="lucide-icon">coins</span> ${item.price}</div>
+            <button class="shop-item-buy ${isOwned ? 'owned' : ''}"
                     ${!canAfford && !isOwned ? 'disabled' : ''}>
                 ${isOwned ? (item.consumable ? 'Buy More' : 'Owned') : 'Buy'}
             </button>
@@ -146,7 +146,7 @@ export default class Shop extends Dialog {
             const ownedItemElement = document.createElement('div');
             ownedItemElement.className = 'owned-item';
             ownedItemElement.innerHTML = `
-                <span class="owned-item-icon">${item.icon}</span>
+                <span class="owned-item-icon lucide-icon">${item.icon}</span>
                 <span class="owned-item-name">${item.name}</span>
                 ${isConsumable ? `<span class="owned-item-count">${count}</span>` : ''}
             `;
