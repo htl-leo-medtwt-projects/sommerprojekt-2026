@@ -1,7 +1,6 @@
 import levels from './levels.js';
 import options from './options.js';
 import opponents from './opponents.js';
-import shopItems from './shopItems.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
@@ -16,10 +15,13 @@ let currentLevel;
 let currentHits = [];
 let lastCombatTime = Date.now();
 let lastCombatTick = 0;
+let lastRegenTime = Date.now();
 let shopInstance = null;
 let lastShopTile = null;
 let levelSequence = [];
 let currentSequenceIndex = 0;
+let currentRoomSequenceIndex = -1;
+let gameOver = false;
 
 export function setShop(shop) {
     shopInstance = shop;
@@ -156,6 +158,7 @@ export function draw(p) {
  * @param {p5} p p5.js Object
  */
 export function keyPressed(p) {
+    if (gameOver) return;
     let newPosition = { ...playerPosition };
     switch (p.key) {
         case 'w':
@@ -321,7 +324,8 @@ function drawLevel(p) {
                         (v) =>
                             v.opponent.x === x &&
                             v.opponent.y === y &&
-                            v.level === currentLevel.name,
+                            v.roomId ===
+                                `${currentRoomSequenceIndex}-${currentLevel.name}`,
                     )
                 ) {
                     p.push();
@@ -344,7 +348,7 @@ function drawLevel(p) {
                 }
             }
 
-            if (playerPosition.x === x && playerPosition.y === y) {
+            if (playerPosition.x === x && playerPosition.y === y && !gameOver) {
                 p.push();
                 p.scale(0.5);
                 p.translate(0, -90 + -20 * Math.cos(p.frameCount * 0.04));
@@ -371,10 +375,21 @@ function drawLevel(p) {
                             // If current level is portal_home, go back to home
                             else if (currentLevel.name === 'portal_home') {
                                 destinationLevel = getLevelByName('home');
+                                killedOpponents = [];
+                                levelSequence = generateLevelSequence();
+                                currentSequenceIndex = 0;
+                                currentRoomSequenceIndex = -1;
                             }
                             // If this is the back transfer (at Plyr position), go back in sequence
                             else if (isBackTransfer) {
                                 destinationLevel = getPreviousLevelInSequence();
+                                // If going back from Room 1 to home, reset dungeon and generate new sequence
+                                if (destinationLevel.name === 'home') {
+                                    killedOpponents = [];
+                                    levelSequence = generateLevelSequence();
+                                    currentSequenceIndex = 0;
+                                    currentRoomSequenceIndex = -1;
+                                }
                             }
                             // Otherwise, continue the sequence forward
                             else {
@@ -385,6 +400,7 @@ function drawLevel(p) {
                                 findPlayerSpawnPosition(destinationLevel);
                             playerPosition = destSpawnPosition;
                             currentLevel = destinationLevel;
+
                             saveState();
                             assets.playerMovement.play();
                         } else {
@@ -467,7 +483,7 @@ function drawLevel(p) {
                             currentFight.opponentHealth = 0;
 
                             killedOpponents.push({
-                                level: currentLevel.name,
+                                roomId: `${currentRoomSequenceIndex}-${currentLevel.name}`,
                                 opponent: currentFight.opponent,
                             });
                             currentLevel.opponents.splice(
@@ -495,6 +511,20 @@ function drawLevel(p) {
                         lastCombatTime = Date.now();
                         lastCombatTick++;
                     }
+                }
+
+                // Health regeneration when not in combat
+                if (
+                    !currentFight &&
+                    playerHealth < options.defaultHealth &&
+                    Date.now() > lastRegenTime + options.healthRegenInterval
+                ) {
+                    playerHealth = Math.min(
+                        playerHealth + options.healthRegenRate,
+                        options.defaultHealth,
+                    );
+                    lastRegenTime = Date.now();
+                    addHit(`+${options.healthRegenRate}`, 'green');
                 }
             }
 
@@ -618,6 +648,7 @@ function getNextLevelInSequence() {
     }
 
     const nextLevelName = levelSequence[currentSequenceIndex];
+    currentRoomSequenceIndex = currentSequenceIndex;
     currentSequenceIndex++;
 
     return getLevelByName(nextLevelName);
@@ -634,6 +665,7 @@ function getPreviousLevelInSequence() {
     }
 
     currentSequenceIndex--;
+    currentRoomSequenceIndex = currentSequenceIndex;
     const previousLevelName = levelSequence[currentSequenceIndex];
 
     return getLevelByName(previousLevelName);
@@ -752,6 +784,7 @@ function saveState() {
             ownedItems: shop.ownedItems,
             levelSequence,
             currentSequenceIndex,
+            currentRoomSequenceIndex,
         }),
     );
 }
@@ -770,6 +803,20 @@ function loadState() {
         shopInstance.ownedItems = state.ownedItems;
         levelSequence = state.levelSequence || [];
         currentSequenceIndex = state.currentSequenceIndex || 0;
+        currentRoomSequenceIndex = state.currentRoomSequenceIndex ?? -1;
+
+        // Migrate old saved state with 'level' to 'roomId'
+        if (killedOpponents && killedOpponents.length > 0) {
+            killedOpponents = killedOpponents.map((entry) => {
+                if (entry.level && !entry.roomId) {
+                    return {
+                        roomId: `${currentRoomSequenceIndex}-${entry.level}`,
+                        opponent: entry.opponent,
+                    };
+                }
+                return entry;
+            });
+        }
 
         // Reconstruct currentLevel using the saved name
         if (state.currentLevelName) {
@@ -779,6 +826,7 @@ function loadState() {
         // Generate new sequence on first play
         levelSequence = generateLevelSequence();
         currentSequenceIndex = 0;
+        currentRoomSequenceIndex = -1;
     }
     calculatePlayerStats();
 }
@@ -834,6 +882,7 @@ function addHit(text, color = 'white') {
  */
 function handleGameOver() {
     currentFight = null;
+    gameOver = true;
     const gameOverDialog = document.getElementById('gameOver');
     if (gameOverDialog) {
         gameOverDialog.showModal();
@@ -844,6 +893,7 @@ function handleGameOver() {
  * Respawns the player, clearing progress but keeping equipment
  */
 export function respawn() {
+    gameOver = false;
     // Clear progress state
     currentLevel = getLevelByName('home');
     playerPosition = { x: 0, y: 0 };

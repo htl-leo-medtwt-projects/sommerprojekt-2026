@@ -21,7 +21,7 @@ export default [
                 y: 1,
             },
             {
-                type: 8,
+                type: 3,
                 x: 2,
                 y: 2,
             },
@@ -52,24 +52,14 @@ export default [
         ],
         opponents: [
             {
-                type: 1,
+                type: 3,
                 x: 0,
                 y: 2,
-            },
-            {
-                type: 3,
-                x: 2,
-                y: 0,
             },
             {
                 type: 5,
                 x: 3,
                 y: 3,
-            },
-            {
-                type: 8,
-                x: 4,
-                y: 1,
             },
         ],
     },
@@ -120,16 +110,6 @@ export default [
                 x: 6,
                 y: 6,
             },
-            {
-                type: 8,
-                x: 3,
-                y: 5,
-            },
-            {
-                type: 10,
-                x: 1,
-                y: 6,
-            },
         ],
     },
     {
@@ -157,23 +137,13 @@ export default [
         ],
         opponents: [
             {
-                type: 7,
-                x: 3,
-                y: 2,
-            },
-            {
                 type: 4,
                 x: 5,
                 y: 1,
             },
             {
-                type: 9,
+                type: 7,
                 x: 6,
-                y: 3,
-            },
-            {
-                type: 11,
-                x: 2,
                 y: 3,
             },
             {
@@ -186,11 +156,8 @@ export default [
     {
         name: 'portal_home',
         string: `
-            Empt/None Empt/None Empt/None Empt/None Empt/None
-            Empt/None Gren/Plyr Gren/Path Empt/None Empt/None
-            Empt/None Gren/Path Gren/SgnH Empt/None Empt/None
-            Empt/None Empt/None Empt/None Empt/None Empt/None
-            Empt/None Empt/None Empt/None Empt/None Empt/None
+            Gren/Plyr Gren/Path
+            Gren/Path Wood/SgnX
         `,
         transfers: [
             {

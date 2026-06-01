@@ -4,26 +4,26 @@ export default [
         name: 'Basic Opponent',
         sprite: './assets/ghost/ghost (14).png',
         lootables: {
-            min: 2,
-            max: 5,
+            min: 8,
+            max: 15,
         },
         attack: {
             min: 1,
-            max: 3,
+            max: 2,
         },
         defense: {
             min: 0,
-            max: 1,
+            max: 0,
         },
-        lives: 3,
+        lives: 4,
     },
     {
         id: 1,
-        name: 'Free 5 Points',
+        name: 'Small Treasure',
         sprite: './assets/ghost/ghost (42).png',
         lootables: {
-            min: 5,
-            max: 5,
+            min: 12,
+            max: 20,
         },
         attack: {
             min: 0,
@@ -40,8 +40,8 @@ export default [
         name: 'Treasure Chest',
         sprite: './assets/ghost/ghost (22).png',
         lootables: {
-            min: 10,
-            max: 20,
+            min: 25,
+            max: 40,
         },
         attack: {
             min: 0,
@@ -58,8 +58,8 @@ export default [
         name: 'Gold Coin',
         sprite: './assets/ghost/ghost (17).png',
         lootables: {
-            min: 3,
-            max: 8,
+            min: 8,
+            max: 12,
         },
         attack: {
             min: 0,
@@ -76,8 +76,8 @@ export default [
         name: 'Gem',
         sprite: './assets/ghost/ghost (21).png',
         lootables: {
-            min: 15,
-            max: 30,
+            min: 40,
+            max: 55,
         },
         attack: {
             min: 0,
@@ -94,34 +94,34 @@ export default [
         name: 'Skeleton Warrior',
         sprite: './assets/ghost/ghost (2).png',
         lootables: {
-            min: 8,
-            max: 15,
+            min: 25,
+            max: 35,
         },
         attack: {
             min: 2,
-            max: 5,
+            max: 4,
         },
         defense: {
-            min: 1,
-            max: 3,
+            min: 0,
+            max: 1,
         },
-        lives: 6,
+        lives: 5,
     },
     {
         id: 6,
         name: 'Ice Spirit',
         sprite: './assets/ghost/ghost (8).png',
         lootables: {
-            min: 12,
-            max: 20,
+            min: 35,
+            max: 50,
         },
         attack: {
             min: 3,
-            max: 7,
+            max: 5,
         },
         defense: {
             min: 1,
-            max: 3,
+            max: 2,
         },
         lives: 7,
     },
@@ -130,26 +130,26 @@ export default [
         name: 'Shadow Ghost',
         sprite: './assets/ghost/ghost (16).png',
         lootables: {
-            min: 18,
-            max: 30,
+            min: 50,
+            max: 70,
         },
         attack: {
             min: 4,
-            max: 9,
+            max: 7,
         },
         defense: {
             min: 2,
-            max: 5,
+            max: 3,
         },
         lives: 9,
     },
     {
         id: 8,
-        name: 'Small Treasure',
-        sprite: './assets/ghost/ghost (4).png',
+        name: 'Frozen Chest',
+        sprite: './assets/ghost/ghost (23).png',
         lootables: {
-            min: 2,
-            max: 5,
+            min: 60,
+            max: 85,
         },
         attack: {
             min: 0,
@@ -163,56 +163,38 @@ export default [
     },
     {
         id: 9,
-        name: 'Frozen Chest',
-        sprite: './assets/ghost/ghost (23).png',
-        lootables: {
-            min: 20,
-            max: 40,
-        },
-        attack: {
-            min: 0,
-            max: 0,
-        },
-        defense: {
-            min: 0,
-            max: 0,
-        },
-        lives: 0,
-    },
-    {
-        id: 10,
         name: 'Snow Golem',
         sprite: './assets/ghost/ghost (24).png',
         lootables: {
-            min: 25,
-            max: 40,
+            min: 70,
+            max: 95,
         },
         attack: {
             min: 5,
-            max: 11,
+            max: 8,
         },
         defense: {
             min: 3,
-            max: 6,
+            max: 4,
         },
-        lives: 11,
+        lives: 12,
     },
     {
-        id: 11,
+        id: 10,
         name: 'Winter Wraith',
         sprite: './assets/ghost/ghost (25).png',
         lootables: {
-            min: 35,
-            max: 50,
+            min: 90,
+            max: 120,
         },
         attack: {
             min: 6,
-            max: 13,
+            max: 10,
         },
         defense: {
             min: 4,
-            max: 8,
+            max: 6,
         },
-        lives: 13,
+        lives: 15,
     },
 ];
