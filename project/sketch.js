@@ -330,9 +330,10 @@ function drawLevel(p) {
                 ) {
                     p.push();
                     p.scale(0.5);
+                    const frame = p.frameCount + currentLevel.opponents.indexOf(opponent) * 100;
                     p.translate(
-                        20 * Math.sin(p.frameCount * 0.02),
-                        -90 + -20 * Math.cos(p.frameCount * 0.1),
+                        20 * Math.sin(frame * 0.02),
+                        -90 + -20 * Math.cos(frame * 0.1),
                     );
                     p.image(assets.opponents[opponent.type], 0, 0);
                     p.pop();

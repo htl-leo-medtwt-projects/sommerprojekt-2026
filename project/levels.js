@@ -20,11 +20,6 @@ export default [
                 x: 1,
                 y: 1,
             },
-            {
-                type: 3,
-                x: 2,
-                y: 2,
-            },
         ],
     },
     {
@@ -148,7 +143,7 @@ export default [
             },
             {
                 type: 3,
-                x: 4,
+                x: 3,
                 y: 2,
             },
         ],
