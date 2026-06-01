@@ -2,14 +2,23 @@
  * Dialog class for managing modal dialogs
  */
 export default class Dialog {
+    /**
+     * @type {HTMLDialogElement} The dialog element
+     */
     dialog;
+    /**
+     * @type {HTMLButtonElement} The close button element
+     */
     closeButton;
+    /**
+     * @type {HTMLButtonElement} The trigger (open) button element
+     */
     trigger;
 
     /**
      * @param {string} dialogQuery - The CSS query of the dialog element
-     * @param {string} triggerQuery - The CSS query of the trigger element
-     * @param {string} closeQuery - The CSS query of the close button (optional, inside the dialog)
+     * @param {string} triggerQuery - The CSS query of the trigger (open) button element
+     * @param {string} closeQuery - The CSS query of the close button
      */
     constructor(dialogQuery, triggerQuery, closeQuery = '.dialog-close') {
         this.dialog = document.querySelector(dialogQuery);
@@ -30,11 +39,11 @@ export default class Dialog {
         }
 
         this.closeButton.addEventListener('click', () => {
-            this.dialog.close();
+            this.close()
         });
 
         this.trigger.addEventListener('click', () => {
-            this.dialog.showModal();
+            this.open();
         });
     }
 

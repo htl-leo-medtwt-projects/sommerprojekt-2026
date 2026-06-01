@@ -2,6 +2,9 @@
  * StartButton class for managing the start button
  */
 export default class StartButton {
+    /**
+     * @type {HTMLButtonElement} The button element
+     */
     button;
 
     /**

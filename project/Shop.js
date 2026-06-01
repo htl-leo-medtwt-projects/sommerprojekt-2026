@@ -2,29 +2,41 @@ import shopItems from './shopItems.js';
 import Dialog from './Dialog.js';
 
 export default class Shop extends Dialog {
+    /**
+     * @type {string} The current category of items being displayed
+     */
+    currentCategory = 'weapons';
+    /**
+     * @type {number} The amount of gold the player has
+     */
+    gold = 0;
+    /**
+     * @type {Object} The items the player has purchased
+     */
+    ownedItems;
+    /**
+     * @type {number} The amount of gold the player has deposited
+     */
+    depositedGold;
+    /**
+     * @type {Function} The function to get the player's current gold balance
+     */
+    getPlayerBalance = null;
+    /**
+     * @type {Function} The function to set the player's gold balance
+     */
+    setPlayerBalance = null;
+    /**
+     * @type {Function} The function to calculate the player's stats
+     */
+    calculatePlayerStats = null;
+
     constructor() {
         super('#shop', '#shopBtn');
-        this.currentCategory = 'weapons';
-        this.gold = 0;
         this.ownedItems = JSON.parse(localStorage.getItem('ownedItems')) || {};
         this.depositedGold =
             parseInt(localStorage.getItem('depositedGold')) || 0;
-        this.getPlayerBalance = null;
-        this.setPlayerBalance = null;
-        this.calculatePlayerStats = null;
-        this.init();
-    }
 
-    setBalanceCallbacks(getBalance, setBalance) {
-        this.getPlayerBalance = getBalance;
-        this.setPlayerBalance = setBalance;
-    }
-
-    setStatCalculator(calculator) {
-        this.calculatePlayerStats = calculator;
-    }
-
-    init() {
         const tabs = document.querySelectorAll('.shop-tab');
         tabs.forEach((tab) => {
             tab.addEventListener('click', () => {
@@ -48,6 +60,15 @@ export default class Shop extends Dialog {
         this.renderShop();
         this.updateGoldDisplay();
         this.renderOwnedItems();
+    }
+
+    setBalanceCallbacks(getBalance, setBalance) {
+        this.getPlayerBalance = getBalance;
+        this.setPlayerBalance = setBalance;
+    }
+
+    setStatCalculator(calculator) {
+        this.calculatePlayerStats = calculator;
     }
 
     renderShop() {
