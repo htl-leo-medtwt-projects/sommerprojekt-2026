@@ -18,4 +18,4 @@ Benjamin, 2AHITM
 - Hintergrundgeschichte
 - Mehr Gegner, mehr Level, ...
 - Guide-Block auf Landing Page schreiben
-- evtl. Optionen befüllen
+- Options-Dialog vervollständigen (oder entfernen)
