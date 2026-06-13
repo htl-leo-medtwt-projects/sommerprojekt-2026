@@ -359,6 +359,40 @@ function drawLevel(p) {
                         -90 + -20 * Math.cos(frame * 0.1),
                     );
                     p.image(assets.opponents[opponent.type], 0, 0);
+
+                    if (opponentType.lives > 0) {
+                        const labelY = 50;
+                        const currentHealth =
+                            currentFight?.opponent === opponent
+                                ? currentFight.opponentHealth
+                                : opponentType.lives;
+                        const cols = [
+                            { icon: '\uE0F2', val: String(currentHealth), color: [255, 100, 100] },
+                            { icon: '\uE2B3', val: `${opponentType.attack.min}-${opponentType.attack.max}`, color: [255, 200, 60] },
+                            { icon: '\uE158', val: `${opponentType.defense.min}-${opponentType.defense.max}`, color: [120, 160, 255] },
+                        ];
+                        const colW = 52;
+                        p.push();
+                        p.scale(2); // reset scale for text rendering
+                        p.noStroke();
+                        p.fill(0, 0, 0, 170);
+                        p.rectMode(p.CENTER);
+                        p.rect(0, labelY, cols.length * colW + 8, 20, 4);
+                        p.textAlign(p.LEFT, p.CENTER);
+                        for (let i = 0; i < cols.length; i++) {
+                            const cx = (i - 1) * colW - 10;
+                            p.fill(cols[i].color[0], cols[i].color[1], cols[i].color[2]);
+                            p.textFont('lucide');
+                            p.textSize(14);
+                            p.text(cols[i].icon, cx, labelY);
+                            p.fill(255);
+                            p.textFont('monospace');
+                            p.textSize(11);
+                            p.text(cols[i].val, cx + 16, labelY);
+                        }
+                        p.pop();
+                    }
+
                     p.pop();
 
                     if (
