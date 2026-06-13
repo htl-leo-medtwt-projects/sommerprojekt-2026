@@ -197,4 +197,58 @@ export default [
         },
         lives: 15,
     },
+    {
+        id: 11,
+        name: 'Goblin Raider',
+        sprite: './assets/animals/buffalo.png',
+        lootables: {
+            min: 30,
+            max: 45,
+        },
+        attack: {
+            min: 3,
+            max: 6,
+        },
+        defense: {
+            min: 1,
+            max: 2,
+        },
+        lives: 6,
+    },
+    {
+        id: 12,
+        name: 'Stone Troll',
+        sprite: './assets/animals/hippo.png',
+        lootables: {
+            min: 120,
+            max: 160,
+        },
+        attack: {
+            min: 6,
+            max: 10,
+        },
+        defense: {
+            min: 5,
+            max: 8,
+        },
+        lives: 20,
+    },
+    {
+        id: 13,
+        name: 'Ancient Dragon',
+        sprite: './assets/animals/crocodile.png',
+        lootables: {
+            min: 200,
+            max: 280,
+        },
+        attack: {
+            min: 10,
+            max: 16,
+        },
+        defense: {
+            min: 8,
+            max: 11,
+        },
+        lives: 30,
+    },
 ];

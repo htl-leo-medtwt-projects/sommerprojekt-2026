@@ -19,6 +19,15 @@ export default {
             rarity: 'common',
         },
         {
+            id: 'war_hammer',
+            name: 'War Hammer',
+            description: 'A heavy hammer that crushes through defenses.',
+            price: 90,
+            damage: 6,
+            icon: 'hammer',
+            rarity: 'uncommon',
+        },
+        {
             id: 'steel_blade',
             name: 'Steel Blade',
             description: 'A sharp steel blade. Cuts through armor.',
@@ -84,6 +93,15 @@ export default {
             price: 100,
             defense: 8,
             icon: 'shield-check',
+            rarity: 'uncommon',
+        },
+        {
+            id: 'knights_pauldrons',
+            name: "Knight's Pauldrons",
+            description: 'Heavy shoulder plates worn by dungeon knights.',
+            price: 150,
+            defense: 10,
+            icon: 'shield-plus',
             rarity: 'uncommon',
         },
         {
