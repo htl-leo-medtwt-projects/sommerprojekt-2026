@@ -367,7 +367,6 @@ function drawLevel(p) {
                         !currentFight
                     ) {
                         playerOpponentCollision(opponent);
-                        console.log('Collided with', opponent);
                     }
                 }
             }
@@ -512,12 +511,6 @@ function drawLevel(p) {
                                 roomId: `${currentRoomSequenceIndex}-${currentLevel.name}`,
                                 opponent: currentFight.opponent,
                             });
-                            currentLevel.opponents.splice(
-                                currentLevel.opponents.indexOf(
-                                    currentFight.type,
-                                ),
-                                1,
-                            );
 
                             playerBalance += Math.max(
                                 0,
