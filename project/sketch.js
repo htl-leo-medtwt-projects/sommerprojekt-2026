@@ -1,6 +1,7 @@
 import levels from './levels.js';
 import options from './options.js';
 import opponents from './opponents.js';
+import { readStore, writeStore } from './store.js';
 
 let assets;
 let playerPosition = { x: 0, y: 0 };
@@ -435,7 +436,7 @@ function drawLevel(p) {
                             let destinationLevel;
 
                             if (currentLevel.name === 'home') {
-                                if (!localStorage.getItem('storyShown')) {
+                                if (!readStore('storyShown')) {
                                     document
                                         .getElementById('storyIntro')
                                         ?.showModal();
@@ -666,7 +667,7 @@ function useTeleportScroll() {
     currentSequenceIndex = 0;
     currentRoomSequenceIndex = -1;
     delete shopInstance.ownedItems.teleport_scroll;
-    localStorage.setItem('ownedItems', JSON.stringify(shopInstance.ownedItems));
+    writeStore('ownedItems', shopInstance.ownedItems);
     saveState();
     assets.playerMovement.play();
 }
@@ -817,29 +818,26 @@ function drawIslandMinimap(p, x, y, isCurrent) {
  * Saves the current game state to localStorage
  */
 function saveState() {
-    localStorage.setItem(
-        'saveState',
-        JSON.stringify({
-            currentLevelName: currentLevel.name,
-            playerPosition,
-            playerBalance,
-            killedOpponents,
-            playerLives: playerHealth,
-            ownedItems: shopInstance.ownedItems,
-            levelSequence,
-            currentSequenceIndex,
-            currentRoomSequenceIndex,
-        }),
-    );
+    writeStore('saveState', {
+        currentLevelName: currentLevel.name,
+        playerPosition,
+        playerBalance,
+        killedOpponents,
+        playerLives: playerHealth,
+        ownedItems: shopInstance.ownedItems,
+        levelSequence,
+        currentSequenceIndex,
+        currentRoomSequenceIndex,
+    });
 }
 
 /**
  * Loads the game state from localStorage
  */
 function loadState() {
-    const savedState = localStorage.getItem('saveState');
+    const savedState = readStore('saveState');
     if (savedState) {
-        const state = JSON.parse(savedState);
+        const state = savedState;
         playerPosition = state.playerPosition;
         playerBalance = state.playerBalance;
         killedOpponents = state.killedOpponents;

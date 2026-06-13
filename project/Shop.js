@@ -1,5 +1,6 @@
 import shopItems from './shopItems.js';
 import Dialog from './Dialog.js';
+import { readStore, writeStore } from './store.js';
 
 export default class Shop extends Dialog {
     /**
@@ -33,9 +34,8 @@ export default class Shop extends Dialog {
 
     constructor() {
         super('#shop', '#shopBtn');
-        this.ownedItems = JSON.parse(localStorage.getItem('ownedItems')) || {};
-        this.depositedGold =
-            parseInt(localStorage.getItem('depositedGold')) || 0;
+        this.ownedItems = readStore('ownedItems') || {};
+        this.depositedGold = readStore('depositedGold') ?? 0;
 
         const tabs = document.querySelectorAll('.shop-tab');
         tabs.forEach((tab) => {
@@ -143,7 +143,7 @@ export default class Shop extends Dialog {
 
         this.ownedItems[item.id] = true;
 
-        localStorage.setItem('ownedItems', JSON.stringify(this.ownedItems));
+        writeStore('ownedItems', this.ownedItems);
 
         this.updateGoldDisplay();
         this.renderShop();
@@ -203,9 +203,8 @@ export default class Shop extends Dialog {
 
     open() {
         super.open();
-        this.ownedItems = JSON.parse(localStorage.getItem('ownedItems')) || {};
-        this.depositedGold =
-            parseInt(localStorage.getItem('depositedGold')) || 0;
+        this.ownedItems = readStore('ownedItems') || {};
+        this.depositedGold = readStore('depositedGold') ?? 0;
         this.updateGoldDisplay();
         this.renderShop();
         this.renderOwnedItems();
@@ -245,7 +244,7 @@ export default class Shop extends Dialog {
         }
 
         this.depositedGold += currentGold;
-        localStorage.setItem('depositedGold', this.depositedGold.toString());
+        writeStore('depositedGold', this.depositedGold);
 
         if (this.setPlayerBalance) {
             this.setPlayerBalance(0);
@@ -274,7 +273,7 @@ export default class Shop extends Dialog {
         }
 
         this.depositedGold = 0;
-        localStorage.setItem('depositedGold', '0');
+        writeStore('depositedGold', 0);
 
         this.updateGoldDisplay();
     }
