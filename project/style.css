@@ -154,7 +154,12 @@ dialog {
     margin: 1rem auto;
     color: white;
 
-    h3,
+    h3 {
+        font-family: var(--title-font-family);
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+
     p {
         margin-bottom: 14px;
     }
