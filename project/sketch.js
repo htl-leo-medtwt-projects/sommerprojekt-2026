@@ -22,6 +22,7 @@ let levelSequence = [];
 let currentSequenceIndex = 0;
 let currentRoomSequenceIndex = -1;
 let gameOver = false;
+let isBlocking = false;
 
 export function setShop(shop) {
     shopInstance = shop;
@@ -140,6 +141,19 @@ export async function setup(p) {
     assets.backgroundMusic.play();
 
     document.querySelector('#loader')?.remove();
+
+    // Use native DOM events for right-click blocking — more reliable than p5's mouseButton in v2
+    const canvas = document.querySelector('#game canvas');
+    canvas?.addEventListener('mousedown', (e) => {
+        if (e.button === 2) isBlocking = true;
+    });
+    canvas?.addEventListener('mouseup', (e) => {
+        if (e.button === 2) isBlocking = false;
+    });
+    canvas?.addEventListener('mouseleave', () => {
+        isBlocking = false;
+    });
+    canvas?.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
 /**
@@ -363,6 +377,12 @@ function drawLevel(p) {
                 p.scale(0.5);
                 p.translate(0, -90 + -20 * Math.cos(p.frameCount * 0.04));
                 p.image(assets.playerImage, 0, 0);
+                if (isBlocking && currentFight) {
+                    p.noFill();
+                    p.stroke(50, 130, 255, 180 + 60 * Math.sin(p.frameCount * 0.15));
+                    p.strokeWeight(6);
+                    p.ellipse(0, 0, 150, 170);
+                }
                 p.pop();
 
                 for (const transfer of currentLevel.transfers ?? []) {
@@ -465,13 +485,14 @@ function drawLevel(p) {
                         );
 
                         if (lastCombatTick % 2 == 0) {
+                            const blockMultiplier = isBlocking ? 0.5 : 1;
                             const absolutePlayerDamage = Math.max(
                                 0,
-                                opponentAttack - playerDefense,
+                                Math.floor((opponentAttack - playerDefense) * blockMultiplier),
                             );
 
                             playerHealth -= absolutePlayerDamage;
-                            addHit(`-${absolutePlayerDamage}`, 'red');
+                            addHit(`-${absolutePlayerDamage}`, isBlocking ? '#5599ff' : 'red');
                         } else {
                             const absoluteOpponentDamage = Math.max(
                                 0,
@@ -879,15 +900,65 @@ function playerOpponentCollision(opponent) {
  * @param {p5} p p5.js Object
  */
 function drawBalance(p) {
+    // \uE0F2 = heart, \uE2B3 = sword, \uE158 = shield, \uE097 = coins
+    const rows = [
+        { icon: '\uE0F2', value: `${playerHealth}` },
+        { icon: '\uE2B3', value: `${playerAttack}` },
+        { icon: '\uE158', value: `${playerDefense}` },
+        { icon: '\uE097', value: `${playerBalance}` },
+    ];
+
+    const lineHeight = 24;
+    const iconSize = 18;
+    const valueSize = 15;
+    const padX = 12;
+    const padY = 10;
+    const boxW = 130;
+    const blockRow = isBlocking && currentFight;
+    const boxH = rows.length * lineHeight + padY * 2 + (blockRow ? lineHeight + 4 : 0);
+
     p.push();
-    p.fill(255);
-    p.textAlign(p.LEFT, p.TOP);
-    p.textSize(16);
-    p.push();
-    p.textFont('lucide');
-    p.text(`\n`, 10, 10);
-    p.pop();
-    p.text(`${playerHealth}\n${playerBalance}`, 30, 12);
+    p.noStroke();
+
+    // Background box
+    p.fill(0, 0, 0, 150);
+    p.rect(padX - 4, padY - 4, boxW, boxH, 6);
+
+    for (let i = 0; i < rows.length; i++) {
+        const y = padY + 4 + i * lineHeight;
+
+        // Icon
+        p.fill(255, 255, 255, 200);
+        p.textFont('lucide');
+        p.textSize(iconSize);
+        p.textAlign(p.LEFT, p.TOP);
+        p.text(rows[i].icon, padX + 2, y);
+
+        // Value
+        p.fill(255);
+        p.textFont('monospace');
+        p.textSize(valueSize);
+        p.text(rows[i].value, padX + 26, y + 2);
+    }
+
+    // Blocking indicator
+    if (blockRow) {
+        const bY = padY + 4 + rows.length * lineHeight + 4;
+        p.fill(50, 130, 255, 220);
+        p.rect(padX - 4, bY - 4, boxW, lineHeight + 2, 6);
+
+        // shield-half icon \uE517
+        p.fill(255);
+        p.textFont('lucide');
+        p.textSize(iconSize);
+        p.textAlign(p.LEFT, p.TOP);
+        p.text('\uE517', padX + 2, bY);
+
+        p.textFont('monospace');
+        p.textSize(valueSize);
+        p.text('Blocking', padX + 26, bY + 2);
+    }
+
     p.pop();
 }
 
