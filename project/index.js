@@ -1,4 +1,3 @@
-import Dialog from './Dialog.js';
 import StartButton from './StartButton.js';
 import Shop from './Shop.js';
 import {
@@ -10,12 +9,10 @@ import {
     calculatePlayerStats,
 } from './sketch.js';
 
-const optionsDialog = new Dialog('#options', '#optionsBtn');
 const shop = new Shop();
 shop.setStatCalculator(calculatePlayerStats);
 setShop(shop);
 const startButton = new StartButton('#startBtn', () => {
-    optionsDialog.close();
     startButton.disable();
     document.querySelector('#game').style.display = 'block';
     document.querySelector('#landing-page').style.display = 'none';

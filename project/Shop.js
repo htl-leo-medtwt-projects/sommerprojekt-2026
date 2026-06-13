@@ -88,6 +88,7 @@ export default class Shop extends Dialog {
             ? this.getPlayerBalance()
             : this.gold;
         const canAfford = currentGold >= item.price;
+        const isDisabled = isOwned || (!canAfford && !isOwned);
 
         const itemElement = document.createElement('div');
         itemElement.className = `shop-item ${isOwned ? 'owned' : ''}`;
@@ -99,6 +100,12 @@ export default class Shop extends Dialog {
         if (item.defense) {
             statsHtml += `<span class="lucide-icon">shield</span> ${item.defense}`;
         }
+        if (item.consumable) {
+            statsHtml += `<span class="lucide-icon">zap</span> Press [E] to use`;
+        }
+
+        let buttonLabel = 'Buy';
+        if (isOwned) buttonLabel = item.consumable ? 'In Bag' : 'Owned';
 
         itemElement.innerHTML = `
             <div class="shop-item-icon lucide-icon">${item.icon}</div>
@@ -108,8 +115,8 @@ export default class Shop extends Dialog {
             ${statsHtml ? `<div class="shop-item-stats">${statsHtml}</div>` : ''}
             <div class="shop-item-price"><span class="lucide-icon">coins</span> ${item.price}</div>
             <button class="shop-item-buy ${isOwned ? 'owned' : ''}"
-                    ${!canAfford && !isOwned ? 'disabled' : ''}>
-                ${isOwned ? 'Owned' : 'Buy'}
+                    ${isDisabled ? 'disabled' : ''}>
+                ${buttonLabel}
             </button>
         `;
 

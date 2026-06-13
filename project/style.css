@@ -330,6 +330,15 @@ footer {
     }
 }
 
+#storyIntro .dialog-content {
+    p {
+        margin-bottom: 1rem;
+        font-family: var(--body-font-family);
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+}
+
 #gameOver .dialog-content {
     text-align: center;
 

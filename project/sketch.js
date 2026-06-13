@@ -176,6 +176,9 @@ export function keyPressed(p) {
         case 't':
             wantsTransfer = true;
             return;
+        case 'e':
+            useTeleportScroll();
+            return;
     }
     if (
         isTileWalkable(newPosition) &&
@@ -364,52 +367,47 @@ function drawLevel(p) {
 
                 for (const transfer of currentLevel.transfers ?? []) {
                     if (transfer.from.x === x && transfer.from.y === y) {
+                        const spawnPosition = findPlayerSpawnPosition(currentLevel);
+                        const isBackTransfer =
+                            transfer.from.x === spawnPosition.x &&
+                            transfer.from.y === spawnPosition.y;
+
+                        // Back exits are disabled in dungeon — scroll or portal_home only
+                        if (isBackTransfer && currentLevel.name !== 'home') {
+                            continue;
+                        }
+
                         if (wantsTransfer) {
                             wantsTransfer = false;
                             let destinationLevel;
 
-                            // Check if this transfer is at the Plyr position (back transfer)
-                            const spawnPosition =
-                                findPlayerSpawnPosition(currentLevel);
-                            const isBackTransfer =
-                                transfer.from.x === spawnPosition.x &&
-                                transfer.from.y === spawnPosition.y;
-
-                            // If current level is home, start the sequence
                             if (currentLevel.name === 'home') {
-                                destinationLevel = getNextLevelInSequence();
-                            }
-                            // If current level is portal_home, go back to home
-                            else if (currentLevel.name === 'portal_home') {
+                                if (!localStorage.getItem('storyShown')) {
+                                    document
+                                        .getElementById('storyIntro')
+                                        ?.showModal();
+                                } else {
+                                    destinationLevel = getNextLevelInSequence();
+                                }
+                            } else if (currentLevel.name === 'portal_home') {
                                 destinationLevel = getLevelByName('home');
                                 killedOpponents = [];
                                 levelSequence = generateLevelSequence();
                                 currentSequenceIndex = 0;
                                 currentRoomSequenceIndex = -1;
-                            }
-                            // If this is the back transfer (at Plyr position), go back in sequence
-                            else if (isBackTransfer) {
-                                destinationLevel = getPreviousLevelInSequence();
-                                // If going back from Room 1 to home, reset dungeon and generate new sequence
-                                if (destinationLevel.name === 'home') {
-                                    killedOpponents = [];
-                                    levelSequence = generateLevelSequence();
-                                    currentSequenceIndex = 0;
-                                    currentRoomSequenceIndex = -1;
-                                }
-                            }
-                            // Otherwise, continue the sequence forward
-                            else {
+                            } else {
                                 destinationLevel = getNextLevelInSequence();
                             }
 
-                            const destSpawnPosition =
-                                findPlayerSpawnPosition(destinationLevel);
-                            playerPosition = destSpawnPosition;
-                            currentLevel = destinationLevel;
+                            if (destinationLevel) {
+                                const destSpawnPosition =
+                                    findPlayerSpawnPosition(destinationLevel);
+                                playerPosition = destSpawnPosition;
+                                currentLevel = destinationLevel;
 
-                            saveState();
-                            assets.playerMovement.play();
+                                saveState();
+                                assets.playerMovement.play();
+                            }
                         } else {
                             drawTransferMarker(p, transfer);
                         }
@@ -607,6 +605,43 @@ function findPlayerSpawnPosition(level) {
 }
 
 /**
+ * Finds the forward (non-spawn) exit transfer of a level
+ * @param {Object} level The level object
+ * @returns {Object|null} The forward transfer, or null if none
+ */
+function findForwardExitTransfer(level) {
+    const spawnPosition = findPlayerSpawnPosition(level);
+    return (
+        level.transfers?.find(
+            (t) =>
+                !(
+                    t.from.x === spawnPosition.x &&
+                    t.from.y === spawnPosition.y
+                ),
+        ) ?? null
+    );
+}
+
+/**
+ * Uses the teleport scroll consumable to warp directly to the home level
+ */
+function useTeleportScroll() {
+    if (!shopInstance?.ownedItems?.teleport_scroll) return;
+    const home = getLevelByName('home');
+    if (!home) return;
+    currentLevel = home;
+    playerPosition = findPlayerSpawnPosition(home);
+    killedOpponents = [];
+    levelSequence = generateLevelSequence();
+    currentSequenceIndex = 0;
+    currentRoomSequenceIndex = -1;
+    delete shopInstance.ownedItems.teleport_scroll;
+    localStorage.setItem('ownedItems', JSON.stringify(shopInstance.ownedItems));
+    saveState();
+    assets.playerMovement.play();
+}
+
+/**
  * Selects a random dungeon level (excluding home and current level)
  * @returns {Object} The randomly selected level
  */
@@ -665,19 +700,6 @@ function getNextLevelInSequence() {
  * Gets the previous level in the sequence
  * @returns {Object} The previous level in the sequence
  */
-function getPreviousLevelInSequence() {
-    if (currentSequenceIndex <= 0) {
-        // If we're at the start of the sequence, go back to home
-        return getLevelByName('home');
-    }
-
-    currentSequenceIndex--;
-    currentRoomSequenceIndex = currentSequenceIndex;
-    const previousLevelName = levelSequence[currentSequenceIndex];
-
-    return getLevelByName(previousLevelName);
-}
-
 /**
  * Converts a level string to a 2D array
  * @param {Object} level The level object

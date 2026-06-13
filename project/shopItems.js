@@ -46,6 +46,18 @@ export default {
             rarity: 'legendary',
         },
     ],
+    consumables: [
+        {
+            id: 'teleport_scroll',
+            name: 'Teleport Scroll',
+            description: 'Instantly teleport back home, escaping the dungeon.',
+            price: 75,
+            icon: 'scroll-text',
+            rarity: 'uncommon',
+            consumable: true,
+            action: 'teleport_exit',
+        },
+    ],
     armor: [
         {
             id: 'leather_armor',

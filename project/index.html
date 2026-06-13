@@ -40,25 +40,41 @@
                     >
                         🏪 Shop
                     </button>
-                    <button
-                        class="secondary"
-                        id="optionsBtn"
-                        style="display: none"
-                    >
-                        Options
-                    </button>
                 </div>
+            </div>
+            <h2 class="heading">The Story</h2>
+            <div class="guide frosted">
+                <p>
+                    Kael was a blacksmith in the river town of Veldmoor — not a
+                    hero, not a soldier. Just a father with a trade and enough.
+                    Then the Dungeon opened.
+                </p>
+                <p>
+                    A sickness called the <em>Grey</em> moved through town.
+                    People stopped waking up — breathing, heart beating, but
+                    behind the eyes: nothing. His daughter
+                    <strong>Mira</strong> was among them.
+                </p>
+                <p>
+                    The scholars say something ancient at the bottom of the
+                    dungeon is draining life from the land. Kill it, and the
+                    taken return. Every soldier they sent did not come back.
+                </p>
+                <p>
+                    Kael is not a soldier. He is a blacksmith who knows which
+                    metal holds and which fails — and a father who cannot walk
+                    past that bed one more morning and do nothing.
+                </p>
+                <p><em>He walks in. The gate closes behind him.</em></p>
             </div>
             <h2 class="heading">How to Play</h2>
             <div class="guide frosted">
-                <!-- TODO: Add more detailed instructions -->
                 <h3>Spielziel</h3>
-                <!-- TODO: An Story Anpassen -->
                 <p>
-                    Das <strong>Ziel des Spiels</strong> ist, den Dungeon zu
-                    erkunden, Schätze zu sammeln und Monster zu besiegen, um
-                    immer stärkere Ausrüstung zu erhalten und schließlich den
-                    Endgegner zu besiegen.
+                    Kämpfe dich durch den Dungeon und besiege das uralte Wesen
+                    in der Tiefe — das Einzige, das
+                    <strong>Miras Rückkehr</strong> ermöglichen kann. Sammle
+                    Schätze, werde stärker, und geh tiefer.
                 </p>
                 <h3>Steuerung</h3>
                 <p>
@@ -96,20 +112,6 @@
                 id="loader"
             ></l-trefoil>
         </section>
-        <dialog id="options">
-            <div class="dialog-header">
-                <h2>Options</h2>
-                <span class="dialog-close">×</span>
-            </div>
-            <div class="dialog-content">
-                <!-- TODO: Add options -->
-                <button
-                    onclick="javascript: localStorage.setItem('debug', 'true');"
-                >
-                    DEBUG on
-                </button>
-            </div>
-        </dialog>
         <dialog id="shop">
             <div class="dialog-header">
                 <h2><span class="lucide-icon">store</span> Shop</h2>
@@ -143,6 +145,9 @@
                     <button class="shop-tab" data-category="armor">
                         <span class="lucide-icon">shield</span> Armor
                     </button>
+                    <button class="shop-tab" data-category="consumables">
+                        <span class="lucide-icon">scroll-text</span> Consumables
+                    </button>
                 </div>
                 <div class="shop-items" id="shopItems">
                     <!-- Items will be populated by JavaScript -->
@@ -160,12 +165,45 @@
                 <h2><span class="lucide-icon">skull</span> Game Over</h2>
             </div>
             <div class="dialog-content">
-                <p>You have lost all your hearts!</p>
+                <p>You have fallen in the dungeon.</p>
                 <p>
-                    Your equipment has been preserved, but your progress has
-                    been reset.
+                    Mira still waits. Your equipment is preserved — venture back
+                    in.
                 </p>
-                <button id="respawnBtn" class="respawn-btn">Respawn</button>
+                <button id="respawnBtn" class="respawn-btn">Try Again</button>
+            </div>
+        </dialog>
+        <dialog id="storyIntro">
+            <div class="dialog-header">
+                <h2>Before You Enter</h2>
+            </div>
+            <div class="dialog-content">
+                <p>
+                    The gate to the dungeon has been open for three weeks. Forty
+                    people in Veldmoor stopped waking up — breathing, heart
+                    beating, but behind the eyes: nothing. The scholars call it
+                    the <em>Grey</em>.
+                </p>
+                <p>Your daughter <strong>Mira</strong> is one of them.</p>
+                <p>
+                    The scholars say the source is something deep in the
+                    dungeon. Ancient. Kill it, and the hold breaks. Every
+                    soldier they sent did not return.
+                </p>
+                <p>
+                    You are not a soldier. You are a blacksmith — and you have
+                    nothing left to lose that isn't already lying motionless in
+                    a bed upstairs.
+                </p>
+                <button
+                    class="respawn-btn"
+                    onclick="
+                        this.closest('dialog').close();
+                        localStorage.setItem('storyShown', 'true');
+                    "
+                >
+                    Enter the Dungeon
+                </button>
             </div>
         </dialog>
         <footer>
