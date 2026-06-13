@@ -261,7 +261,7 @@ function drawLevel(p) {
 
     const rows = getLevelArray(currentLevel);
 
-    const boardWidth = options.tileWidth * rows[0].length;
+    // const boardWidth = options.tileWidth * rows[0].length;
     // const boardHeight = options.tileHeight * rows.length;
 
     // Update player position to be inside the board
@@ -626,24 +626,6 @@ function findPlayerSpawnPosition(level) {
 }
 
 /**
- * Finds the forward (non-spawn) exit transfer of a level
- * @param {Object} level The level object
- * @returns {Object|null} The forward transfer, or null if none
- */
-function findForwardExitTransfer(level) {
-    const spawnPosition = findPlayerSpawnPosition(level);
-    return (
-        level.transfers?.find(
-            (t) =>
-                !(
-                    t.from.x === spawnPosition.x &&
-                    t.from.y === spawnPosition.y
-                ),
-        ) ?? null
-    );
-}
-
-/**
  * Uses the teleport scroll consumable to warp directly to the home level
  */
 function useTeleportScroll() {
@@ -660,21 +642,6 @@ function useTeleportScroll() {
     localStorage.setItem('ownedItems', JSON.stringify(shopInstance.ownedItems));
     saveState();
     assets.playerMovement.play();
-}
-
-/**
- * Selects a random dungeon level (excluding home and current level)
- * @returns {Object} The randomly selected level
- */
-function selectRandomDungeonLevel() {
-    const dungeonLevels = levels.filter(
-        (level) => level.name !== 'home' && level.name !== currentLevel.name,
-    );
-    if (dungeonLevels.length === 0) {
-        return getLevelByName('home');
-    }
-    const randomIndex = Math.floor(Math.random() * dungeonLevels.length);
-    return dungeonLevels[randomIndex];
 }
 
 /**
@@ -831,7 +798,7 @@ function saveState() {
             playerBalance,
             killedOpponents,
             playerLives: playerHealth,
-            ownedItems: shop.ownedItems,
+            ownedItems: shopInstance.ownedItems,
             levelSequence,
             currentSequenceIndex,
             currentRoomSequenceIndex,
