@@ -2,7 +2,7 @@ export default [
     {
         id: 0,
         name: 'Basic Opponent',
-        sprite: './assets/ghost/ghost (14).png',
+        sprite: './assets/animals/chicken.png',
         lootables: {
             min: 8,
             max: 15,
@@ -20,7 +20,7 @@ export default [
     {
         id: 1,
         name: 'Small Treasure',
-        sprite: './assets/ghost/ghost (42).png',
+        sprite: './assets/gems/gem1.png',
         lootables: {
             min: 12,
             max: 20,
@@ -38,7 +38,7 @@ export default [
     {
         id: 2,
         name: 'Treasure Chest',
-        sprite: './assets/ghost/ghost (22).png',
+        sprite: './assets/gems/gem2.png',
         lootables: {
             min: 25,
             max: 40,
@@ -56,7 +56,7 @@ export default [
     {
         id: 3,
         name: 'Gold Coin',
-        sprite: './assets/ghost/ghost (17).png',
+        sprite: './assets/gems/gem3.png',
         lootables: {
             min: 8,
             max: 12,
@@ -74,7 +74,7 @@ export default [
     {
         id: 4,
         name: 'Gem',
-        sprite: './assets/ghost/ghost (21).png',
+        sprite: './assets/gems/gem4.png',
         lootables: {
             min: 40,
             max: 55,
@@ -92,7 +92,7 @@ export default [
     {
         id: 5,
         name: 'Skeleton Warrior',
-        sprite: './assets/ghost/ghost (2).png',
+        sprite: './assets/animals/bear.png',
         lootables: {
             min: 25,
             max: 35,
@@ -110,7 +110,7 @@ export default [
     {
         id: 6,
         name: 'Ice Spirit',
-        sprite: './assets/ghost/ghost (8).png',
+        sprite: './assets/animals/penguin.png',
         lootables: {
             min: 35,
             max: 50,
@@ -128,7 +128,7 @@ export default [
     {
         id: 7,
         name: 'Shadow Ghost',
-        sprite: './assets/ghost/ghost (16).png',
+        sprite: './assets/animals/dog.png',
         lootables: {
             min: 50,
             max: 70,
@@ -146,7 +146,7 @@ export default [
     {
         id: 8,
         name: 'Frozen Chest',
-        sprite: './assets/ghost/ghost (23).png',
+        sprite: './assets/gems/gem5.png',
         lootables: {
             min: 60,
             max: 85,
@@ -164,7 +164,7 @@ export default [
     {
         id: 9,
         name: 'Snow Golem',
-        sprite: './assets/ghost/ghost (24).png',
+        sprite: './assets/animals/moose.png',
         lootables: {
             min: 70,
             max: 95,
@@ -182,7 +182,7 @@ export default [
     {
         id: 10,
         name: 'Winter Wraith',
-        sprite: './assets/ghost/ghost (25).png',
+        sprite: './assets/animals/elephant.png',
         lootables: {
             min: 90,
             max: 120,

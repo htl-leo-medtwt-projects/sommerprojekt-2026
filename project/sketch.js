@@ -330,7 +330,13 @@ function drawLevel(p) {
                 ) {
                     p.push();
                     p.scale(0.5);
-                    const frame = p.frameCount + currentLevel.opponents.indexOf(opponent) * 100;
+                    const opponentType = opponents[opponent.type];
+                    if (opponentType.lives === 0) {
+                        p.scale(0.3);
+                    }
+                    const frame =
+                        p.frameCount +
+                        currentLevel.opponents.indexOf(opponent) * 100;
                     p.translate(
                         20 * Math.sin(frame * 0.02),
                         -90 + -20 * Math.cos(frame * 0.1),
