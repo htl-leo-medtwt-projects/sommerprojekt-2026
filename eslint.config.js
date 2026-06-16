@@ -17,6 +17,8 @@ export default [
                 clearInterval: 'readonly',
                 localStorage: 'readonly',
                 Event: 'readonly',
+                atob: 'readonly',
+                btoa: 'readonly',
             },
         },
         linterOptions: {
