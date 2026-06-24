@@ -368,9 +368,21 @@ function drawLevel(p) {
                                 ? currentFight.opponentHealth
                                 : opponentType.lives;
                         const cols = [
-                            { icon: '\uE0F2', val: String(currentHealth), color: [255, 100, 100] },
-                            { icon: '\uE2B3', val: `${opponentType.attack.min}-${opponentType.attack.max}`, color: [255, 200, 60] },
-                            { icon: '\uE158', val: `${opponentType.defense.min}-${opponentType.defense.max}`, color: [120, 160, 255] },
+                            {
+                                icon: '\uE0F2',
+                                val: String(currentHealth),
+                                color: [255, 100, 100],
+                            },
+                            {
+                                icon: '\uE2B3',
+                                val: `${opponentType.attack.min}-${opponentType.attack.max}`,
+                                color: [255, 200, 60],
+                            },
+                            {
+                                icon: '\uE158',
+                                val: `${opponentType.defense.min}-${opponentType.defense.max}`,
+                                color: [120, 160, 255],
+                            },
                         ];
                         const colW = 52;
                         p.push();
@@ -382,7 +394,11 @@ function drawLevel(p) {
                         p.textAlign(p.LEFT, p.CENTER);
                         for (let i = 0; i < cols.length; i++) {
                             const cx = (i - 1) * colW - 10;
-                            p.fill(cols[i].color[0], cols[i].color[1], cols[i].color[2]);
+                            p.fill(
+                                cols[i].color[0],
+                                cols[i].color[1],
+                                cols[i].color[2],
+                            );
                             p.textFont('lucide');
                             p.textSize(14);
                             p.text(cols[i].icon, cx, labelY);
@@ -413,7 +429,12 @@ function drawLevel(p) {
                 p.image(assets.playerImage, 0, 0);
                 if (isBlocking && currentFight) {
                     p.noFill();
-                    p.stroke(50, 130, 255, 180 + 60 * Math.sin(p.frameCount * 0.15));
+                    p.stroke(
+                        50,
+                        130,
+                        255,
+                        180 + 60 * Math.sin(p.frameCount * 0.15),
+                    );
                     p.strokeWeight(6);
                     p.ellipse(0, 0, 150, 170);
                 }
@@ -421,7 +442,8 @@ function drawLevel(p) {
 
                 for (const transfer of currentLevel.transfers ?? []) {
                     if (transfer.from.x === x && transfer.from.y === y) {
-                        const spawnPosition = findPlayerSpawnPosition(currentLevel);
+                        const spawnPosition =
+                            findPlayerSpawnPosition(currentLevel);
                         const isBackTransfer =
                             transfer.from.x === spawnPosition.x &&
                             transfer.from.y === spawnPosition.y;
@@ -437,9 +459,34 @@ function drawLevel(p) {
 
                             if (currentLevel.name === 'home') {
                                 if (!readStore('storyShown')) {
-                                    document
-                                        .getElementById('storyIntro')
-                                        ?.showModal();
+                                    const dialog =
+                                        document.getElementById('storyIntro');
+                                    dialog?.showModal();
+
+                                    // Handle dialog close to proceed with transfer
+                                    const handleDialogClose = () => {
+                                        dialog.removeEventListener(
+                                            'close',
+                                            handleDialogClose,
+                                        );
+                                        writeStore('storyShown', true);
+                                        destinationLevel =
+                                            getNextLevelInSequence();
+                                        if (destinationLevel) {
+                                            const destSpawnPosition =
+                                                findPlayerSpawnPosition(
+                                                    destinationLevel,
+                                                );
+                                            playerPosition = destSpawnPosition;
+                                            currentLevel = destinationLevel;
+                                            saveState();
+                                            assets.playerMovement.play();
+                                        }
+                                    };
+                                    dialog?.addEventListener(
+                                        'close',
+                                        handleDialogClose,
+                                    );
                                 } else {
                                     destinationLevel = getNextLevelInSequence();
                                 }
@@ -522,11 +569,17 @@ function drawLevel(p) {
                             const blockMultiplier = isBlocking ? 0.5 : 1;
                             const absolutePlayerDamage = Math.max(
                                 0,
-                                Math.floor((opponentAttack - playerDefense) * blockMultiplier),
+                                Math.floor(
+                                    (opponentAttack - playerDefense) *
+                                        blockMultiplier,
+                                ),
                             );
 
                             playerHealth -= absolutePlayerDamage;
-                            addHit(`-${absolutePlayerDamage}`, isBlocking ? '#5599ff' : 'red');
+                            addHit(
+                                `-${absolutePlayerDamage}`,
+                                isBlocking ? '#5599ff' : 'red',
+                            );
                         } else {
                             const absoluteOpponentDamage = Math.max(
                                 0,
@@ -907,7 +960,8 @@ function drawBalance(p) {
     const padY = 10;
     const boxW = 130;
     const blockRow = isBlocking && currentFight;
-    const boxH = rows.length * lineHeight + padY * 2 + (blockRow ? lineHeight + 4 : 0);
+    const boxH =
+        rows.length * lineHeight + padY * 2 + (blockRow ? lineHeight + 4 : 0);
 
     p.push();
     p.noStroke();
